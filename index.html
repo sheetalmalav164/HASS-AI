@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haas — AI Career Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F0F9FF;
+  --bg2:#E8F5F0;
+  --white:#FFFFFF;
+  --glass:rgba(255,255,255,0.75);
+  --glass2:rgba(255,255,255,0.55);
+  --border:rgba(14,165,120,0.15);
+  --border2:rgba(14,165,120,0.3);
+  --text:#0D1F1A;
+  --text2:#3D5A52;
+  --text3:#7A9E96;
+  --blue:#0EA5E9;
+  --blue2:#0284C7;
+  --blue3:#BAE6FD;
+  --blue-light:#E0F2FE;
+  --green:#0D9E78;
+  --green2:#0A7D60;
+  --green3:#A7F3D0;
+  --green-light:#ECFDF5;
+  --green-dark:#065F46;
+  --accent:#06C984;
+  --amber:#D97706;
+  --amber-l:#FEF3C7;
+  --red:#DC2626;
+  --red-l:#FEE2E2;
+  --r:10px;--rl:18px;--rxl:28px;
+  --shadow:0 1px 3px rgba(13,158,120,0.08),0 4px 16px rgba(13,158,120,0.08);
+  --shadow2:0 4px 24px rgba(13,158,120,0.12),0 16px 64px rgba(14,165,233,0.1);
+  --shadow3:0 8px 40px rgba(13,158,120,0.18),0 24px 80px rgba(14,165,233,0.15);
+  --smooth: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;min-height:100vh;}
+
+/* ══════ ANIMATED BACKGROUND ══════ */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+.page-wrap{position:relative;z-index:1;}
+
+/* ══════ NAV ══════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:68px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 5vw;
+  background:rgba(240,249,255,0.85);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  transition:var(--smooth);
+}
+nav.scrolled{background:rgba(255,255,255,0.92);box-shadow:0 2px 20px rgba(13,158,120,0.1);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:0.3rem;cursor:pointer;}
+.nav-logo .accent{color:var(--green);}
+.nav-logo .badge-ai{font-family:'Sora',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:linear-gradient(135deg,var(--green),var(--blue));color:#fff;padding:0.2rem 0.4rem;border-radius:4px;margin-left:0.3rem;vertical-align:middle;}
+.nav-links{display:flex;gap:0.25rem;list-style:none;}
+.nav-links a{font-size:0.84rem;font-weight:500;color:var(--text2);text-decoration:none;padding:0.5rem 1rem;border-radius:8px;transition:var(--smooth);cursor:pointer;letter-spacing:-0.01em;}
+.nav-links a:hover,.nav-links a.active{color:var(--green);background:var(--green-light);}
+.nav-right{display:flex;align-items:center;gap:0.75rem;}
+.nav-signin{font-size:0.83rem;font-weight:600;color:var(--text2);background:transparent;border:1.5px solid var(--border2);padding:0.5rem 1.2rem;border-radius:8px;cursor:pointer;transition:var(--smooth);}
+.nav-signin:hover{color:var(--green);border-color:var(--green);background:var(--green-light);}
+
+/* Dynamic Logged-in User Navbar Style */
+.nav-user { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; position: relative; padding: 0.35rem 0.75rem; border-radius: 100px; transition: var(--smooth); border: 1px solid transparent; }
+.nav-user:hover { background: rgba(13,158,120,0.06); border-color: var(--border); }
+.nav-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--green), var(--blue2)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; letter-spacing: -0.02em; }
+.nav-uname { font-size: 0.84rem; font-weight: 600; color: var(--text); }
+.user-dropdown { 
+  display: block; position: absolute; top: 56px; right: 0; 
+  background: rgba(255,255,255,0.98); backdrop-filter: blur(16px); 
+  border: 1px solid var(--border2); border-radius: 12px; 
+  box-shadow: var(--shadow3); min-width: 170px; z-index: 600; overflow: hidden;
+  opacity: 0; visibility: hidden; transform: translateY(-10px);
+  transition: var(--smooth);
+}
+.user-dropdown.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.user-dropdown a { display: block; padding: 0.85rem 1.1rem; font-size: 0.82rem; color: var(--text2); text-decoration: none; font-weight: 600; transition: background 0.2s ease; cursor: pointer; }
+.user-dropdown a:hover { background: var(--green-light); color: var(--green); }
+.user-dropdown hr { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+/* ══════ PAGES ══════ */
+.page{display:none;padding-top:68px;min-height:100vh;}
+.page.active{
+  display:block;
+  animation: smoothPageLoad 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes smoothPageLoad {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes softFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ══════ ENHANCED AUTH / LOGIN PAGE ══════ */
+.login-wrap { min-height: calc(100vh - 68px); display: flex; align-items: center; justify-content: center; padding: 3rem 5vw; }
+.login-card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.9); border-radius: var(--rxl); padding: 2.5rem; width: 100%; max-width: 440px; box-shadow: var(--shadow3); position: relative; }
+
+/* Auth Tabs */
+.lc-tabs { display: flex; background: rgba(13,158,120,0.08); border-radius: 12px; padding: 0.35rem; margin-bottom: 2rem; }
+.lc-tab { flex: 1; padding: 0.65rem; border: none; background: transparent; border-radius: 8px; font-family: 'Sora', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--text2); cursor: pointer; transition: var(--smooth); }
+.lc-tab.active { background: #fff; color: var(--green); box-shadow: 0 2px 12px rgba(13,158,120,0.1); }
+
+.lc-header { text-align: center; margin-bottom: 1.5rem; }
+.lc-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; margin-bottom: 0.5rem; transition: var(--smooth); }
+.lc-header p { font-size: 0.88rem; color: var(--text2); transition: var(--smooth); }
+.lc-oauth { display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.5rem; }
+.oauth-btn { display: flex; align-items: center; justify-content: center; gap: 0.75rem; width: 100%; padding: 0.85rem; border-radius: 10px; font-family: 'Sora', sans-serif; font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: var(--smooth); border: 1.5px solid var(--border2); background: rgba(255,255,255,0.8); color: var(--text); position: relative; }
+.oauth-btn:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 6px 16px rgba(13,158,120,0.12); border-color: var(--green); }
+.oauth-btn:active { transform: translateY(0px); transition: 0.1s; }
+.oauth-btn.google:hover { border-color: #FFC107; }
+.oauth-btn.github:hover { border-color: #0D1F1A; }
+.oauth-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.lc-divider { display: flex; align-items: center; text-align: center; margin-bottom: 1.5rem; }
+.lc-divider::before, .lc-divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border2); }
+.lc-divider span { padding: 0 0.85rem; font-size: 0.75rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+
+.lc-form { display: flex; flex-direction: column; gap: 1.1rem; }
+.lc-group { display: flex; flex-direction: column; gap: 0.4rem; transition: var(--smooth); }
+.lc-group label { font-size: 0.78rem; font-weight: 700; color: var(--text2); }
+.lc-group input { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid var(--border2); border-radius: 8px; font-family: 'Sora', sans-serif; font-size: 0.88rem; color: var(--text); background: rgba(255,255,255,0.9); outline: none; transition: var(--smooth); }
+.lc-group input:focus { border-color: var(--green); box-shadow: 0 0 0 4px rgba(13,158,120,0.12); background: #fff; }
+
+/* Password Field Wrapper */
+.pw-wrap { position: relative; display: flex; align-items: center; }
+.pw-wrap input { width: 100%; padding-right: 2.8rem; }
+.pw-toggle { position: absolute; right: 0.8rem; background: none; border: none; cursor: pointer; color: var(--text3); display: flex; align-items: center; justify-content: center; padding: 0.2rem; transition: var(--smooth); }
+.pw-toggle:hover { color: var(--green); transform: scale(1.1); }
+
+.lc-forgot { text-align: right; margin-top: -0.3rem; }
+.lc-forgot a { font-size: 0.78rem; font-weight: 600; color: var(--blue2); text-decoration: none; cursor: pointer; transition: var(--smooth); }
+.lc-forgot a:hover { color: var(--green); }
+.lc-submit { width: 100%; background: linear-gradient(135deg, var(--green), var(--blue2)); color: #fff; border: none; padding: 0.95rem; border-radius: 10px; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: var(--smooth); margin-top: 0.5rem; box-shadow: 0 4px 16px rgba(13,158,120,0.25); }
+.lc-submit:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(13,158,120,0.35); }
+
+/* Resume upload zone styles */
+.upload-zone { 
+  border: 2px dashed var(--border2); 
+  border-radius: var(--rxl); 
+  padding: 4rem 2rem; 
+  text-align: center; 
+  margin: 3rem auto; 
+  max-width: 600px; 
+  transition: var(--smooth); 
+  background: rgba(255,255,255,0.3);
+}
+.upload-zone.dragover { border-color: var(--green); background: var(--green-light); }
+.upload-content { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+
+/* ══════ HOME: HERO ══════ */
+.hero{
+  min-height:calc(100vh - 68px);
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+  padding:5rem 5vw 4rem;max-width:1280px;margin:0 auto;
+}
+.hero-left{}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--green);background:var(--green-light);
+  border:1px solid var(--green3);padding:0.4rem 1rem;border-radius:100px;
+  margin-bottom:1.75rem;
+  animation:fadeUp 0.5s ease both;
+}
+.kicker-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.8rem,4.5vw,4.2rem);line-height:1.08;font-weight:800;
+  letter-spacing:-0.02em;margin-bottom:1.5rem;
+  animation:fadeUp 0.5s ease 0.08s both;
+}
+.hero h1 .line-blue{color:var(--blue2);}
+.hero h1 .line-green{color:var(--green);}
+.hero-desc{
+  font-size:1rem;color:var(--text2);line-height:1.85;
+  max-width:500px;margin-bottom:2.25rem;font-weight:400;
+  animation:fadeUp 0.5s ease 0.15s both;
+}
+.hero-btns{display:flex;gap:0.85rem;flex-wrap:wrap;margin-bottom:2.25rem;animation:fadeUp 0.5s ease 0.2s both;}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-family:'Sora',sans-serif;font-size:0.9rem;font-weight:700;
+  color:#fff;background:linear-gradient(135deg,var(--green) 0%,var(--blue2) 100%);
+  border:none;padding:0.9rem 2rem;border-radius:10px;cursor:pointer;
+  text-decoration:none;letter-spacing:-0.01em;
+  transition:var(--smooth);box-shadow:0 4px 20px rgba(13,158,120,0.3);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(13,158,120,0.4);}
+.btn-primary .arrow{transition:var(--smooth);}
+.btn-primary:hover .arrow{transform:translateX(4px);}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-family:'Sora',sans-serif;font-size:0.9rem;font-weight:600;
+  color:var(--text2);background:var(--glass);
+  border:1.5px solid var(--border2);padding:0.9rem 1.75rem;border-radius:10px;cursor:pointer;
+  text-decoration:none;letter-spacing:-0.01em;
+  transition:var(--smooth);backdrop-filter:blur(8px);
+}
+.btn-secondary:hover{color:var(--green);border-color:var(--green);background:var(--green-light); transform:translateY(-2px);}
+.hero-social-proof{display:flex;align-items:center;gap:1rem;animation:fadeUp 0.5s ease 0.25s both;}
+.sp-avatars{display:flex;}
+.sp-av{width:32px;height:32px;border-radius:50%;border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:800;color:#fff;margin-left:-10px;flex-shrink:0; transition:var(--smooth);}
+.sp-avatars:hover .sp-av { margin-left:-5px; } 
+.sp-av:first-child{margin-left:0 !important;}
+.sp-info{}
+.sp-stars{color:#F59E0B;font-size:0.75rem;}
+.sp-text{font-size:0.75rem;color:var(--text3);margin-top:0.1rem;}
+.sp-text strong{color:var(--text2);font-weight:700;}
+
+/* Hero right visual */
+.hero-right{position:relative;animation:fadeUp 0.5s ease 0.1s both;}
+.hero-card-main{
+  background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.8);border-radius:var(--rxl);
+  box-shadow:var(--shadow3);overflow:hidden;
+  transition:var(--smooth);
+}
+.hero-card-main:hover { transform: translateY(-5px); box-shadow: 0 12px 50px rgba(13,158,120,0.25); }
+.hc-topbar{
+  background:linear-gradient(135deg,var(--green) 0%,var(--blue2) 100%);
+  padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;
+}
+.hc-dots{display:flex;gap:0.4rem;}
+.hc-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.4);}
+.hc-dot:nth-child(1){background:rgba(255,255,255,0.8);}
+.hc-title{font-size:0.75rem;font-weight:600;color:rgba(255,255,255,0.9);letter-spacing:0.02em;}
+.hc-badge{font-size:0.62rem;font-weight:700;background:rgba(255,255,255,0.2);color:#fff;padding:0.2rem 0.6rem;border-radius:100px;}
+.hc-body{padding:1.5rem;}
+.resume-mini{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:1.25rem;margin-bottom:1rem;}
+.rm-top{display:flex;align-items:center;gap:0.85rem;margin-bottom:1rem;}
+.rm-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue2));display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;color:#fff;flex-shrink:0;}
+.rm-name{font-size:0.95rem;font-weight:700;color:var(--text);}
+.rm-role{font-size:0.72rem;color:var(--text3);}
+.rm-verified{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);background:var(--green-light);border:1px solid var(--green3);padding:0.2rem 0.55rem;border-radius:100px;display:flex;align-items:center;gap:0.25rem;width:fit-content;}
+.rm-row{display:flex;align-items:center;gap:0.5rem;font-size:0.76rem;color:var(--text2);margin-bottom:0.35rem;}
+.rm-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.rm-skills{display:flex;gap:0.35rem;flex-wrap:wrap;margin-top:0.75rem;}
+.rms{font-size:0.65rem;font-weight:600;color:var(--blue2);background:var(--blue-light);border:1px solid var(--blue3);padding:0.2rem 0.55rem;border-radius:100px;}
+.resume-actions{display:flex;gap:0.5rem;margin-top:0.4rem;}
+.ra-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:0.35rem;font-size:0.75rem;font-weight:700;padding:0.55rem;border-radius:8px;cursor:pointer;border:none;transition:var(--smooth);}
+.ra-btn.preview{color:var(--green2);background:var(--green-light);border:1px solid var(--green3);}
+.ra-btn.preview:hover{background:var(--green3); transform:translateY(-2px);}
+.ra-btn.download{color:#fff;background:linear-gradient(135deg,var(--green),var(--blue2));}
+.ra-btn.download:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(13,158,120,0.3);}
+.match-row{display:flex;flex-direction:column;gap:0.5rem;}
+.mr-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:0.75rem 0.9rem;display:flex;align-items:center;justify-content:space-between;transition:var(--smooth);}
+.mr-card:hover{border-color:var(--green);transform:translateX(5px); box-shadow:0 4px 12px rgba(13,158,120,0.08);}
+.mr-left{display:flex;align-items:center;gap:0.65rem;}
+.mr-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:900;color:#fff;}
+.mr-t{font-size:0.8rem;font-weight:700;}
+.mr-s{font-size:0.68rem;color:var(--text3);}
+.mr-pct{font-size:0.72rem;font-weight:800;padding:0.2rem 0.55rem;border-radius:100px;}
+.mr-pct.hi{color:var(--green);background:var(--green-light);}
+.mr-pct.mid{color:var(--amber);background:var(--amber-l);}
+
+/* Floating chips */
+.float{position:absolute;background:var(--glass);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.9);border-radius:12px;padding:0.75rem 1rem;box-shadow:var(--shadow2);animation:float 4s ease-in-out infinite;}
+.float.chip-a{top:-1.5rem;right:-1rem;animation-delay:0s;}
+.float.chip-b{bottom:2rem;left:-1.5rem;animation-delay:2s;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.float-icon{font-size:1rem;margin-bottom:0.2rem;}
+.float-label{font-size:0.62rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+.float-val{font-size:1rem;font-weight:800;color:var(--text);}
+.float-val.g{color:var(--green);}
+
+/* ══════ STATS BAR ══════ */
+.stats-bar{
+  background:var(--glass);backdrop-filter:blur(16px);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  display:flex;flex-wrap:wrap;
+}
+.stat-item{flex:1;min-width:150px;padding:2rem 1.5rem;text-align:center;border-right:1px solid var(--border); transition:var(--smooth);}
+.stat-item:hover { background: rgba(255,255,255,0.5); transform: translateY(-2px); }
+.stat-item:last-child{border-right:none;}
+.stat-num{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--green),var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-lbl{font-size:0.76rem;color:var(--text3);margin-top:0.35rem;font-weight:500;}
+
+/* ══════ SECTION COMMONS ══════ */
+.section{padding:6rem 5vw;max-width:1280px;margin:0 auto;}
+.section-full{padding:6rem 5vw;}
+.section-inner{max-width:1280px;margin:0 auto;}
+.tag-line{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:0.4rem;margin-bottom:0.85rem;}
+.tag-line::before{content:'';display:block;width:20px;height:2px;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:2px;}
+.section-heading{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,3vw,3rem);font-weight:800;line-height:1.12;letter-spacing:-0.02em;margin-bottom:1rem;}
+.section-heading em{font-style:italic;color:var(--green);}
+.section-heading .blue{color:var(--blue2);}
+.section-sub{font-size:0.95rem;color:var(--text2);line-height:1.85;max-width:520px;}
+.centered{text-align:center;}
+.centered .section-sub,.centered .tag-line{margin-left:auto;margin-right:auto;justify-content:center;}
+
+/* ══════ FEATURES GRID ══════ */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3.5rem;}
+.feat-card{
+  background:var(--glass);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.9);border-radius:var(--rl);
+  padding:2rem 1.75rem;
+  transition:var(--smooth);
+  position:relative;overflow:hidden;cursor:default;
+}
+.feat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--green),var(--blue));
+  transform:scaleX(0);transform-origin:left;transition:var(--smooth);
+}
+.feat-card:hover{transform:translateY(-8px);box-shadow:var(--shadow3);}
+.feat-card:hover::before{transform:scaleX(1);}
+.feat-icon-wrap{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1.25rem; transition:var(--smooth);}
+.feat-card:hover .feat-icon-wrap { transform: scale(1.1); }
+.feat-icon-wrap.g{background:var(--green-light);border:1px solid var(--green3);}
+.feat-icon-wrap.b{background:var(--blue-light);border:1px solid var(--blue3);}
+.feat-label{font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.22rem 0.6rem;border-radius:100px;margin-bottom:0.85rem;display:inline-block;}
+.fl-core{color:var(--green);background:var(--green-light);}
+.fl-ai{color:var(--blue2);background:var(--blue-light);}
+.fl-soon{color:var(--amber);background:var(--amber-l);}
+.fl-trust{color:var(--green-dark);background:var(--green-light);}
+.feat-title{font-size:1.05rem;font-weight:700;margin-bottom:0.5rem;letter-spacing:-0.01em;}
+.feat-desc{font-size:0.86rem;color:var(--text2);line-height:1.8;}
+.feat-link{display:inline-flex;align-items:center;gap:0.3rem;font-size:0.8rem;font-weight:700;color:var(--green);margin-top:1rem;cursor:pointer;text-decoration:none;}
+.feat-link .arr{transition:transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);}
+.feat-link:hover .arr{transform:translateX(5px);}
+
+/* ══════ HOW IT WORKS ══════ */
+.how-wrap{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.how-steps{display:flex;flex-direction:column;gap:0;}
+.how-step{
+  display:flex;gap:1.5rem;padding:1.75rem 0;border-bottom:1px solid var(--border);
+  cursor:default;transition:var(--smooth);
+}
+.how-step:hover { background: rgba(255,255,255,0.4); padding-left: 1rem; border-radius: 12px; border-bottom-color: transparent; }
+.how-step:last-child{border-bottom:none;}
+.how-step:hover .hs-num{background:linear-gradient(135deg,var(--green),var(--blue));color:#fff;border-color:transparent; transform: scale(1.1); box-shadow: 0 4px 12px rgba(13,158,120,0.3); }
+.hs-num{
+  width:40px;height:40px;border-radius:50%;
+  border:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.8rem;font-weight:800;color:var(--text3);
+  flex-shrink:0;margin-top:2px;transition:var(--smooth);
+}
+.hs-body{}
+.hs-title{font-size:1rem;font-weight:700;margin-bottom:0.4rem;letter-spacing:-0.01em;}
+.hs-desc{font-size:0.86rem;color:var(--text2);line-height:1.8;}
+
+/* Panel tabs */
+.how-panel{
+  background:var(--glass);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.9);border-radius:var(--rxl);
+  box-shadow:var(--shadow3);overflow:hidden;
+}
+.panel-tabs{display:flex;border-bottom:1px solid var(--border);}
+.ptab{flex:1;padding:1rem;text-align:center;font-size:0.77rem;font-weight:700;color:var(--text3);cursor:pointer;transition:var(--smooth);border-bottom:2.5px solid transparent;letter-spacing:-0.01em;}
+.ptab:hover { background: rgba(255,255,255,0.5); color: var(--green); }
+.ptab.active{color:var(--green);border-bottom-color:var(--green);background:rgba(13,158,120,0.05);}
+.panel-body{padding:1.5rem; position: relative; min-height: 280px; }
+.panel-section{display:none; position: absolute; top: 1.5rem; left: 1.5rem; right: 1.5rem; }
+.panel-section.active{display:block; animation: softFade 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;}
+.pf-row{display:flex;gap:0.6rem;margin-bottom:0.85rem;}
+.pf{flex:1;padding:0.6rem 0.85rem;border:1.5px solid var(--border2);border-radius:8px;font-family:'Sora',sans-serif;font-size:0.82rem;color:var(--text);background:rgba(255,255,255,0.8);outline:none;transition:var(--smooth);}
+.pf:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 4px rgba(13,158,120,0.12); transform:translateY(-1px);}
+.p-gen-btn{width:100%;background:linear-gradient(135deg,var(--green),var(--blue2));color:#fff;border:none;padding:0.8rem;border-radius:9px;font-family:'Sora',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;margin-top:0.5rem;transition:var(--smooth);}
+.p-gen-btn:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(13,158,120,0.35);}
+.p-job-list{display:flex;flex-direction:column;gap:0.55rem;}
+.pjl{background:rgba(255,255,255,0.8);border:1px solid var(--border);border-radius:8px;padding:0.75rem;display:flex;align-items:center;justify-content:space-between;transition:var(--smooth); cursor:pointer;}
+.pjl:hover{border-color:var(--green);transform:translateX(6px); box-shadow:0 4px 12px rgba(13,158,120,0.1);}
+.pjl-l{display:flex;align-items:center;gap:0.6rem;}
+.pjl-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:900;color:#fff;}
+.pjl-t{font-size:0.8rem;font-weight:700;}
+.pjl-s{font-size:0.68rem;color:var(--text3);}
+.pct-badge{font-size:0.7rem;font-weight:800;padding:0.2rem 0.55rem;border-radius:100px;}
+.pct-badge.h{color:var(--green);background:var(--green-light);}
+.pct-badge.m{color:var(--amber);background:var(--amber-l);}
+.p-verify-list{display:flex;flex-direction:column;gap:0.55rem;}
+.pvl{display:flex;align-items:center;gap:0.75rem;background:rgba(255,255,255,0.8);border:1px solid var(--border);border-radius:8px;padding:0.75rem; transition: var(--smooth);}
+.pvl:hover{ border-color: var(--green); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(13,158,120,0.08);}
+.pvl-ico{width:34px;height:34px;border-radius:8px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;}
+.pvl-name{font-size:0.8rem;font-weight:700;}
+.pvl-status{font-size:0.68rem;color:var(--text3);}
+.pvl-badge{margin-left:auto;font-size:0.65rem;font-weight:700;padding:0.2rem 0.55rem;border-radius:100px;white-space:nowrap;}
+.pvl-badge.ok{color:var(--green);background:var(--green-light);}
+.pvl-badge.pend{color:var(--amber);background:var(--amber-l);}
+
+/* ══════ TESTIMONIALS ══════ */
+.testi-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3.5rem;}
+.testi-card{
+  background:var(--glass);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.9);border-radius:var(--rl);
+  padding:1.85rem;transition:var(--smooth);cursor:default;
+}
+.testi-card:hover{transform:translateY(-8px);box-shadow:var(--shadow3);}
+.testi-stars{color:#F59E0B;font-size:0.9rem;margin-bottom:1rem;letter-spacing:0.05em;}
+.testi-quote{font-size:0.9rem;color:var(--text2);line-height:1.85;font-style:italic;margin-bottom:1.5rem;position:relative;padding-left:1.25rem;}
+.testi-quote::before{content:'"';position:absolute;left:0;top:-0.2rem;font-family:'Playfair Display',serif;font-size:2rem;color:var(--green3);line-height:1;}
+.testi-author{display:flex;align-items:center;gap:0.85rem;}
+.ta-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;color:#fff;flex-shrink:0;}
+.ta-name{font-size:0.85rem;font-weight:700;}
+.ta-role{font-size:0.72rem;color:var(--text3);}
+
+/* ══════ TRUST SECTION ══════ */
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;}
+.trust-card{
+  background:var(--glass);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.9);border-radius:var(--rl);
+  padding:1.75rem 1.5rem;text-align:center;transition:var(--smooth);
+}
+.trust-card:hover{transform:translateY(-6px);box-shadow:var(--shadow2);}
+.tc-icon{font-size:2rem;margin-bottom:0.85rem; transition:var(--smooth);}
+.trust-card:hover .tc-icon{ transform: scale(1.15) rotate(5deg); }
+.tc-title{font-size:0.92rem;font-weight:700;margin-bottom:0.4rem;letter-spacing:-0.01em;}
+.tc-desc{font-size:0.8rem;color:var(--text2);line-height:1.75;}
+
+/* ══════ RESUME BUILDER PAGE ══════ */
+.builder-wrap{display:grid;grid-template-columns:380px 1fr;min-height:calc(100vh - 68px);}
+.b-sidebar{
+  background:rgba(255,255,255,0.8);backdrop-filter:blur(16px);
+  border-right:1px solid var(--border);padding:2rem 1.75rem;overflow-y:auto;
+}
+.b-preview-area{
+  background:linear-gradient(135deg,rgba(224,242,254,0.6) 0%,rgba(236,253,245,0.6) 100%);
+  padding:2rem;overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:1.25rem;
+}
+.bs-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.2rem;}
+.bs-sub{font-size:0.8rem;color:var(--text3);margin-bottom:1.75rem;}
+.b-section{margin-bottom:1.75rem;}
+.b-section-title{font-size:0.68rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);padding-bottom:0.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+.bfg{margin-bottom:0.85rem;}
+.bfl{font-size:0.7rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--text2);margin-bottom:0.35rem;}
+.bfi{width:100%;padding:0.6rem 0.9rem;border:1.5px solid var(--border2);border-radius:8px;font-family:'Sora',sans-serif;font-size:0.84rem;color:var(--text);background:rgba(255,255,255,0.9);outline:none;transition:var(--smooth);}
+.bfi:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 4px rgba(13,158,120,0.12); transform:translateY(-1px);}
+.bfi.ta{resize:vertical;min-height:76px;}
+.bfr{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+.skill-wrap{display:flex;gap:0.5rem;}
+.skill-wrap .bfi{flex:1;}
+.skill-add-btn{background:linear-gradient(135deg,var(--green),var(--blue2));color:#fff;border:none;width:38px;height:38px;border-radius:8px;font-size:1.1rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:var(--smooth);}
+.skill-add-btn:hover{transform:scale(1.1) rotate(90deg); box-shadow:0 4px 12px rgba(13,158,120,0.3);}
+.skills-display{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;}
+.skill-chip{display:inline-flex;align-items:center;gap:0.3rem;font-size:0.7rem;font-weight:700;color:var(--green2);background:var(--green-light);border:1px solid var(--green3);padding:0.25rem 0.6rem;border-radius:100px; animation: softFade 0.3s ease;}
+.skill-chip button{background:none;border:none;cursor:pointer;color:var(--green3);font-size:0.9rem;line-height:1;padding:0;transition:var(--smooth);}
+.skill-chip button:hover{color:var(--red); transform: scale(1.2);}
+.tmpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+.tmpl-opt{
+  padding:0.6rem 0.75rem;border:2px solid var(--border2);border-radius:8px;
+  font-size:0.78rem;font-weight:600;cursor:pointer;text-align:center;
+  background:rgba(255,255,255,0.7);transition:var(--smooth);color:var(--text2);
+}
+.tmpl-opt.active,.tmpl-opt:hover{border-color:var(--green);color:var(--green);background:var(--green-light); transform: translateY(-2px);}
+.gen-btn{
+  width:100%;background:linear-gradient(135deg,var(--green) 0%,var(--blue2) 100%);
+  color:#fff;border:none;padding:0.95rem;border-radius:10px;
+  font-family:'Sora',sans-serif;font-weight:800;font-size:0.9rem;
+  cursor:pointer;transition:var(--smooth);margin-top:0.5rem;
+  box-shadow:0 4px 20px rgba(13,158,120,0.3);
+}
+.gen-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(13,158,120,0.4);}
+
+/* Preview actions */
+.preview-topbar{width:100%;max-width:640px;display:flex;justify-content:space-between;align-items:center;}
+.preview-topbar-title{font-size:0.85rem;font-weight:700;color:var(--text2);}
+.preview-action-btns{display:flex;gap:0.6rem;}
+.pab{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;font-weight:700;padding:0.55rem 1.1rem;border-radius:8px;cursor:pointer;border:none;transition:var(--smooth);font-family:'Sora',sans-serif;}
+.pab.see{color:var(--green2);background:var(--green-light);border:1.5px solid var(--green3);}
+.pab.see:hover{background:var(--green3); transform:translateY(-2px);}
+.pab.dl{color:#fff;background:linear-gradient(135deg,var(--green),var(--blue2));}
+.pab.dl:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(13,158,120,0.35);}
+.resume-score-bar{
+  width:100%;max-width:640px;
+  background:rgba(255,255,255,0.8);backdrop-filter:blur(8px);
+  border:1px solid var(--border);border-radius:var(--r);
+  padding:0.85rem 1.25rem;display:flex;align-items:center;gap:1.5rem;
+}
+.rsb-label{font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+.rsb-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.rsb-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:3px;transition:width 0.8s cubic-bezier(0.25, 1, 0.5, 1);}
+.rsb-score{font-size:0.88rem;font-weight:800;color:var(--green); transition:var(--smooth);}
+
+/* Resume document */
+.resume-doc{
+  width:100%;max-width:640px;
+  background:#fff;border:1px solid var(--border);border-radius:var(--rl);
+  box-shadow:var(--shadow3);overflow:hidden;
+  transition:var(--smooth);
+}
+.resume-doc:hover { box-shadow: 0 16px 60px rgba(13,158,120,0.2); transform: translateY(-2px); }
+.rd-hd{background:linear-gradient(135deg,var(--green) 0%,var(--blue2) 100%);padding:2rem 2.25rem 1.75rem;color:#fff;}
+.rd-name{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:800;letter-spacing:-0.02em;}
+.rd-role{font-size:0.88rem;opacity:0.85;margin-top:0.3rem;}
+.rd-contact-row{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1rem;}
+.rd-ci{display:flex;align-items:center;gap:0.35rem;font-size:0.74rem;opacity:0.85;}
+.rd-bd{padding:2rem 2.25rem;}
+.rd-sec{margin-bottom:1.75rem;}
+.rd-sec-title{font-size:0.68rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);border-bottom:2px solid var(--green3);padding-bottom:0.4rem;margin-bottom:0.9rem;}
+.rd-item{margin-bottom:0.9rem;}
+.rd-item-t{font-weight:700;font-size:0.88rem;color:var(--text);}
+.rd-item-sub{font-size:0.76rem;color:var(--text3);margin-top:0.1rem;}
+.rd-item-desc{font-size:0.83rem;color:var(--text2);line-height:1.75;margin-top:0.4rem;}
+.rd-skills-wrap{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.rd-skill{font-size:0.7rem;font-weight:700;color:var(--blue2);background:var(--blue-light);border:1px solid var(--blue3);padding:0.25rem 0.6rem;border-radius:100px;}
+
+/* ══════ JOBS PAGE ══════ */
+.jobs-wrap{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 68px);}
+.j-sidebar{background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);border-right:1px solid var(--border);padding:1.75rem 1.5rem;overflow-y:auto;}
+.js-title{font-size:0.68rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:1.25rem;}
+.jf-group{margin-bottom:1.75rem;}
+.jf-label{font-size:0.78rem;font-weight:700;color:var(--text2);margin-bottom:0.65rem;}
+.jf-opts{display:flex;flex-direction:column;gap:0.45rem;}
+.jf-opt{display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:var(--text2);cursor:pointer; transition:var(--smooth);}
+.jf-opt:hover { color: var(--green); }
+.jf-opt input{accent-color:var(--green); cursor:pointer;}
+.j-main{padding:1.75rem;}
+.j-searchbar{display:flex;gap:0.75rem;margin-bottom:1.25rem;}
+.j-si{flex:1;padding:0.75rem 1rem;border:1.5px solid var(--border2);border-radius:9px;font-family:'Sora',sans-serif;font-size:0.88rem;background:rgba(255,255,255,0.9);outline:none;transition:var(--smooth);}
+.j-si:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(13,158,120,0.12); transform: translateY(-1px);}
+.j-sb{background:linear-gradient(135deg,var(--green),var(--blue2));color:#fff;border:none;padding:0.75rem 1.5rem;border-radius:9px;font-family:'Sora',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;transition:var(--smooth);}
+.j-sb:hover{transform:translateY(-3px); box-shadow: 0 6px 20px rgba(13,158,120,0.3);}
+.j-meta{font-size:0.82rem;color:var(--text3);margin-bottom:1.25rem;}
+.j-meta strong{color:var(--text2);font-weight:700;}
+.job-cards{display:flex;flex-direction:column;gap:1.1rem;}
+.job-card{
+  background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);
+  border:1px solid var(--border);border-radius:var(--rl);
+  padding:1.5rem 1.75rem;transition:var(--smooth);cursor:pointer;
+}
+.job-card:hover{border-color:var(--green);box-shadow:var(--shadow2);transform:translateY(-4px);}
+.job-card.hot{border-color:rgba(13,158,120,0.3);background:linear-gradient(135deg,rgba(236,253,245,0.7) 0%,rgba(255,255,255,0.85) 100%);}
+.jc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;}
+.jc-left{display:flex;align-items:center;gap:1rem;}
+.jc-logo{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;font-weight:900;color:#fff;flex-shrink:0; transition:var(--smooth);}
+.job-card:hover .jc-logo { transform: scale(1.08) rotate(-5deg); }
+.jc-name{font-size:0.97rem;font-weight:800;letter-spacing:-0.01em;}
+.jc-company{font-size:0.78rem;color:var(--text3);}
+.jc-right{display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;}
+.match-pct{font-size:0.72rem;font-weight:800;padding:0.3rem 0.7rem;border-radius:100px;}
+.match-pct.high{color:var(--green);background:var(--green-light);border:1px solid var(--green3);}
+.match-pct.med{color:var(--amber);background:var(--amber-l);}
+.new-tag{font-size:0.62rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--green),var(--blue));padding:0.22rem 0.6rem;border-radius:100px;}
+.jc-chips{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.9rem;}
+.jcc{display:flex;align-items:center;gap:0.3rem;font-size:0.74rem;color:var(--text2);background:rgba(255,255,255,0.7);border:1px solid var(--border);padding:0.25rem 0.7rem;border-radius:100px;}
+.jc-desc{font-size:0.84rem;color:var(--text2);line-height:1.75;margin-bottom:1rem;}
+.jc-foot{display:flex;align-items:center;justify-content:space-between;}
+.jc-salary{font-size:0.9rem;font-weight:800;color:var(--green);}
+.jc-actions{display:flex;gap:0.5rem;}
+.j-save-btn{background:transparent;border:1.5px solid var(--border2);color:var(--text3);padding:0.55rem 0.85rem;border-radius:8px;font-size:0.8rem;cursor:pointer;transition:var(--smooth);font-family:'Sora',sans-serif;}
+.j-save-btn:hover{border-color:var(--green);color:var(--green); background:var(--green-light);}
+.j-apply-btn{background:linear-gradient(135deg,var(--green),var(--blue2));color:#fff;border:none;padding:0.55rem 1.3rem;border-radius:8px;font-family:'Sora',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:var(--smooth);}
+.j-apply-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(13,158,120,0.35);}
+
+/* ══════ PRICING PAGE ══════ */
+.pricing-wrap{max-width:1100px;margin:0 auto;padding:5rem 5vw;}
+.plan-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3.5rem;}
+.plan-card{
+  background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);
+  border:1px solid var(--border);border-radius:var(--rxl);
+  padding:2.25rem 2rem;transition:var(--smooth);position:relative;
+}
+.plan-card:hover{transform:translateY(-8px);box-shadow:var(--shadow3);}
+.plan-card.featured{border-color:var(--green3);background:linear-gradient(160deg,rgba(236,253,245,0.9) 0%,rgba(224,242,254,0.9) 100%);}
+.plan-card.featured:hover { transform:translateY(-12px); box-shadow: 0 16px 50px rgba(13,158,120,0.25); }
+.pop-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:0.68rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;background:linear-gradient(135deg,var(--green),var(--blue2));color:#fff;padding:0.3rem 1.1rem;border-radius:100px;white-space:nowrap;}
+.pn-label{font-size:0.68rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:0.6rem;}
+.pn-price{font-family:'Playfair Display',serif;font-size:3rem;font-weight:800;line-height:1;color:var(--text);margin-bottom:0.3rem;letter-spacing:-0.02em;}
+.pn-price .curr{font-size:1.1rem;vertical-align:super;font-family:'Sora',sans-serif;font-weight:700;}
+.pn-price .per{font-size:0.85rem;color:var(--text3);font-family:'Sora',sans-serif;font-weight:400;}
+.pn-tagline{font-size:0.82rem;color:var(--text2);margin-bottom:1.5rem;line-height:1.6;}
+.pn-div{height:1px;background:var(--border);margin-bottom:1.5rem;}
+.pn-feats{list-style:none;display:flex;flex-direction:column;gap:0.65rem;margin-bottom:2rem;}
+.pn-feats li{font-size:0.84rem;color:var(--text2);display:flex;align-items:flex-start;gap:0.6rem;line-height:1.5;}
+.chk-g{color:var(--green);font-size:0.9rem;flex-shrink:0;margin-top:1px;font-weight:700;}
+.chk-n{color:var(--border2);font-size:0.9rem;flex-shrink:0;margin-top:1px;}
+.pn-feats li.off{color:var(--text3);}
+.pn-btn{width:100%;padding:0.9rem;border-radius:10px;font-family:'Sora',sans-serif;font-weight:800;font-size:0.88rem;cursor:pointer;transition:var(--smooth);border:none;letter-spacing:-0.01em;}
+.pn-btn.outline{background:transparent;border:1.5px solid var(--border2);color:var(--text2);}
+.pn-btn.outline:hover{border-color:var(--green);color:var(--green);background:var(--green-light); transform:translateY(-2px);}
+.pn-btn.solid{background:linear-gradient(135deg,var(--green) 0%,var(--blue2) 100%);color:#fff;box-shadow:0 4px 20px rgba(13,158,120,0.3);}
+.pn-btn.solid:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(13,158,120,0.4);}
+
+/* FAQ */
+.faq-wrap{max-width:780px;margin:5rem auto 0;}
+.faq-item{border-bottom:1px solid var(--border);padding:1.25rem 0;cursor:pointer;}
+.faq-q{font-weight:700;font-size:0.93rem;display:flex;justify-content:space-between;align-items:center;gap:1rem; transition:var(--smooth);}
+.faq-item:hover .faq-q { color: var(--green); }
+.faq-arrow{width:26px;height:26px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--green);flex-shrink:0;transition:var(--smooth);}
+.faq-a{font-size:0.86rem;color:var(--text2);line-height:1.85;max-height:0;overflow:hidden;transition:var(--smooth); opacity: 0;}
+.faq-item.open .faq-a{max-height:200px;padding-top:0.75rem; opacity: 1;}
+.faq-item.open .faq-arrow{background:var(--green);color:#fff;transform:rotate(45deg);}
+
+/* ══════ CTA ══════ */
+.cta-block{
+  background:linear-gradient(135deg,var(--green-dark) 0%,var(--blue2) 100%);
+  padding:6rem 5vw;text-align:center;position:relative;overflow:hidden;
+}
+.cta-block::before{content:'';position:absolute;top:-50%;left:-20%;width:700px;height:700px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;}
+.cta-block::after{content:'';position:absolute;bottom:-50%;right:-20%;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;}
+.cta-block .section-heading{color:#fff;margin-bottom:1rem;}
+.cta-block .section-sub{color:rgba(255,255,255,0.75);margin:0 auto 2.5rem;}
+.cta-form{display:flex;gap:0.75rem;max-width:440px;margin:0 auto;position:relative;z-index:1;}
+.cta-input{flex:1;padding:0.9rem 1.25rem;border:1.5px solid rgba(255,255,255,0.25);border-radius:10px;font-family:'Sora',sans-serif;font-size:0.88rem;color:#fff;background:rgba(255,255,255,0.15);outline:none;transition:var(--smooth);}
+.cta-input::placeholder{color:rgba(255,255,255,0.5);}
+.cta-input:focus{border-color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.25); transform:translateY(-1px);}
+.cta-submit{background:#fff;color:var(--green);border:none;padding:0.9rem 1.75rem;border-radius:10px;font-family:'Sora',sans-serif;font-weight:800;font-size:0.88rem;cursor:pointer;white-space:nowrap;transition:var(--smooth);}
+.cta-submit:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.25);}
+
+/* ══════ FOOTER ══════ */
+footer{background:#0B1D18;color:rgba(255,255,255,0.65);padding:4rem 5vw 2rem;}
+.footer-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+.fl-logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:#fff;margin-bottom:0.75rem;}
+.fl-logo .a{color:var(--accent);}
+.fl-tagline{font-size:0.82rem;line-height:1.75;max-width:240px;}
+.fc-title{font-size:0.65rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:1rem;}
+.fc-links{list-style:none;display:flex;flex-direction:column;gap:0.55rem;}
+.fc-links a{font-size:0.83rem;color:rgba(255,255,255,0.55);text-decoration:none;cursor:pointer;transition:var(--smooth);}
+.fc-links a:hover{color:#fff; transform:translateX(3px);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.fc{font-size:0.75rem;}
+.fbadges{display:flex;gap:0.5rem;}
+.fbadge{font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.1);padding:0.25rem 0.65rem;border-radius:100px;}
+
+/* ══════ RESUME PREVIEW MODAL ══════ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:900;
+  background:rgba(11,29,24,0.7);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  padding:2rem;opacity:0;pointer-events:none;transition:opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{
+  background:#fff;border-radius:var(--rxl);
+  max-width:680px;width:100%;max-height:90vh;overflow-y:auto;
+  box-shadow:0 24px 80px rgba(0,0,0,0.3);
+  transform:translateY(40px) scale(0.96);
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.modal-overlay.open .modal-box{
+  transform:translateY(0) scale(1);
+  opacity: 1;
+}
+.modal-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.25rem 1.75rem;border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:#fff;z-index:10;
+}
+.modal-title{font-size:0.9rem;font-weight:800;color:var(--text);}
+.modal-actions{display:flex;gap:0.6rem;}
+.modal-close{background:rgba(0,0,0,0.06);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:var(--smooth);}
+.modal-close:hover{background:rgba(220,38,38,0.1);color:var(--red); transform:scale(1.1) rotate(90deg);}
+.modal-dl-btn{display:inline-flex;align-items:center;gap:0.35rem;background:linear-gradient(135deg,var(--green),var(--blue2));color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:8px;font-family:'Sora',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:var(--smooth);}
+.modal-dl-btn:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(13,158,120,0.3);}
+.modal-resume-wrap{padding:1.75rem;}
+
+/* ══════ TOAST ══════ */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;z-index:9999;
+  background:linear-gradient(135deg,var(--green),var(--blue2));
+  color:#fff;padding:1rem 1.5rem;border-radius:12px;
+  font-size:0.85rem;font-weight:600;
+  box-shadow:0 8px 32px rgba(13,158,120,0.4);
+  transform:translateY(80px) scale(0.95);opacity:0;
+  transition:all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  display:flex;align-items:center;gap:0.6rem;max-width:320px;
+}
+.toast.show{transform:translateY(0) scale(1);opacity:1;}
+
+/* ══════ ANIMATIONS ══════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:none;}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);}
+.reveal.in{opacity:1;transform:none;}
+.delay-1{transition-delay:0.08s;}.delay-2{transition-delay:0.16s;}.delay-3{transition-delay:0.24s;}
+
+/* ══════ RESPONSIVE ══════ */
+@media(max-width:1000px){.hero{grid-template-columns:1fr;}.hero-right{display:none;}.feat-grid{grid-template-columns:1fr 1fr;}.how-wrap{grid-template-columns:1fr;}.testi-wrap{grid-template-columns:1fr;}.trust-grid{grid-template-columns:1fr 1fr;}.plan-cards{grid-template-columns:1fr;}.jobs-wrap{grid-template-columns:1fr;}.j-sidebar{display:none;}.builder-wrap{grid-template-columns:1fr;}.b-preview-area{display:none;}.footer-top{grid-template-columns:1fr 1fr;}}
+@media(max-width:700px){.feat-grid{grid-template-columns:1fr;}.trust-grid{grid-template-columns:1fr;}.stat-item{min-width:140px;}.cta-form{flex-direction:column;}.nav-links{display:none;}.footer-top{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="page-wrap">
+
+<nav id="main-nav">
+  <span class="nav-logo" onclick="showPage('home')">Haas<span class="accent">.</span><span class="badge-ai">AI</span></span>
+  <ul class="nav-links">
+    <li><a id="nl-home" class="active" onclick="showPage('home')">Home</a></li>
+    <li><a id="nl-builder" onclick="showPage('builder')">Résumé Builder</a></li>
+    <li><a id="nl-jobs" onclick="showPage('jobs')">Find Jobs</a></li>
+    <li><a id="nl-pricing" onclick="showPage('pricing')">Pricing</a></li>
+    <li><a id="nl-score" onclick="showPage('score')">Score My Resume</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-signin" onclick="showPage('login'); toggleAuthMode('login');">Log in</button>
+  </div>
+</nav>
+
+<div id="page-login" class="page">
+  <div class="login-wrap">
+    <div class="login-card reveal">
+      
+      <div class="lc-tabs">
+        <button class="lc-tab active" id="tab-login" onclick="toggleAuthMode('login')">Log In</button>
+        <button class="lc-tab" id="tab-signup" onclick="toggleAuthMode('signup')">Sign Up</button>
+      </div>
+
+      <div class="lc-header">
+        <h2 id="auth-title">Welcome back</h2>
+        <p id="auth-desc">Log in to Haas to access your dashboard.</p>
+      </div>
+      
+      <div class="lc-oauth">
+        <button class="oauth-btn google" id="google-signin" onclick="handleGoogleSignIn(event)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+          </svg> 
+          Continue with Google
+        </button>
+        
+        <button class="oauth-btn github" id="github-signin" onclick="handleGitHubSignIn(event)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0D1F1A">
+            <path d="M12 0C5.37 0 0 5.373 0 12c0 5.302 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+          </svg>
+          Continue with GitHub
+        </button>
+      </div>
+
+      <div class="lc-divider"><span>or continue with email</span></div>
+      
+      <form class="lc-form" id="auth-form" onsubmit="handleAuthSubmit(event)">
+        <div class="lc-group" id="group-name" style="display: none;">
+          <label>Full Name</label>
+          <input type="text" id="auth-name" placeholder="e.g. Kavya Gupta">
+        </div>
+
+        <div class="lc-group">
+          <label>Email Address</label>
+          <input type="email" id="auth-email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="lc-group">
+          <label>Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="auth-pw" placeholder="••••••••" required>
+            <button type="button" class="pw-toggle" onclick="togglePassword()" aria-label="Toggle Password Visibility">
+              <svg id="pw-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="lc-forgot" id="forgot-link">
+          <a onclick="showToast('Password reset link sent!')">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="lc-submit" id="auth-submit">Log In</button>
+      </form>
+      
+    </div>
+  </div>
+</div>
+
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-kicker"><span class="kicker-dot"></span>India's #1 AI Career Platform</div>
+      <h1>Your career,<br><span class="line-green">intelligently</span><br><span class="line-blue">crafted.</span></h1>
+      <p class="hero-desc">From résumé to offer letter — Haas uses AI to build your profile, match you with the right jobs, and guide you to the career you deserve. No confusion. Just clarity.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('builder')">Build My Résumé Free <span class="arrow">→</span></button>
+        <button class="btn-secondary" onclick="showPage('jobs')">▶ Browse Jobs</button>
+      </div>
+      <div class="hero-social-proof">
+        <div class="sp-avatars">
+          <div class="sp-av" style="background:linear-gradient(135deg,#0D9E78,#0EA5E9);">KG</div>
+          <div class="sp-av" style="background:linear-gradient(135deg,#0EA5E9,#0284C7);">RK</div>
+          <div class="sp-av" style="background:linear-gradient(135deg,#D97706,#F59E0B);">AM</div>
+          <div class="sp-av" style="background:linear-gradient(135deg,#6C47FF,#0EA5E9);">SG</div>
+        </div>
+        <div class="sp-info">
+          <div class="sp-stars">★★★★★</div>
+          <div class="sp-text"><strong>12,000+ job seekers</strong> hired this month</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="float chip-a">
+        <div class="float-icon">🎯</div>
+        <div class="float-label">Match Score</div>
+        <div class="float-val g">94%</div>
+      </div>
+      <div class="hero-card-main">
+        <div class="hc-topbar">
+          <div class="hc-dots"><div class="hc-dot"></div><div class="hc-dot"></div><div class="hc-dot"></div></div>
+          <div class="hc-title">haas.ai — Dashboard</div>
+          <div class="hc-badge">● Live</div>
+        </div>
+        <div class="hc-body">
+          <div class="resume-mini">
+            <div class="rm-top">
+              <div class="rm-av">KG</div>
+              <div>
+                <div class="rm-name">Kavya Gupta</div>
+                <div class="rm-role">Software Engineer · Bhopal, MP</div>
+              </div>
+            </div>
+            <div class="rm-verified">✓ Haas Verified</div>
+            <div style="height:0.75rem;"></div>
+            <div class="rm-row"><div class="rm-dot"></div>B.Tech CSE — RGPV University, 2023</div>
+            <div class="rm-row"><div class="rm-dot"></div>1 yr experience · Full Stack Dev</div>
+            <div class="rm-row"><div class="rm-dot"></div>Open to Remote + Bhopal</div>
+            <div class="rm-skills"><span class="rms">React</span><span class="rms">Node.js</span><span class="rms">Python</span><span class="rms">MongoDB</span></div>
+            <div class="resume-actions" style="margin-top:1rem;">
+              <button class="ra-btn preview" onclick="openModal()">👁 Preview</button>
+              <button class="ra-btn download" onclick="downloadResume()">⬇ Download</button>
+            </div>
+          </div>
+          <div class="match-row">
+            <div class="mr-card"><div class="mr-left"><div class="mr-ico" style="background:#E84393;">T</div><div><div class="mr-t">Frontend Engineer</div><div class="mr-s">TCS · ₹7–9 LPA</div></div></div><span class="mr-pct hi">94%</span></div>
+            <div class="mr-card"><div class="mr-left"><div class="mr-ico" style="background:#0070F3;">I</div><div><div class="mr-t">React Developer</div><div class="mr-s">Infosys · ₹6–8 LPA</div></div></div><span class="mr-pct hi">87%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="float chip-b">
+        <div class="float-icon">📄</div>
+        <div class="float-label">Resume Score</div>
+        <div class="float-val">9.2<span style="font-size:0.75rem;font-weight:400;color:var(--text3);">/10</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">50K+</div><div class="stat-lbl">Résumés Generated</div></div>
+    <div class="stat-item"><div class="stat-num">200+</div><div class="stat-lbl">Partner Companies</div></div>
+    <div class="stat-item"><div class="stat-num">3×</div><div class="stat-lbl">Interview Rate</div></div>
+    <div class="stat-item"><div class="stat-num">500+</div><div class="stat-lbl">Cities Covered</div></div>
+    <div class="stat-item"><div class="stat-num">98%</div><div class="stat-lbl">User Satisfaction</div></div>
+  </div>
+
+  <div class="section-full" style="background:rgba(255,255,255,0.5);">
+    <div class="section-inner">
+      <div class="centered reveal">
+        <div class="tag-line">What Haas Does</div>
+        <h2 class="section-heading">Everything you need to get <em>hired faster</em></h2>
+        <p class="section-sub">Four powerful pillars that take you from uncertain to unstoppable — all in one intelligent platform.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="feat-card reveal"><div class="feat-label fl-core">Core Feature</div><div class="feat-icon-wrap g">📄</div><div class="feat-title">AI Résumé Builder</div><p class="feat-desc">Enter your details once — Haas formats, polishes, and generates a recruiter-ready résumé instantly. Preview live and download PDF.</p><span class="feat-link" onclick="showPage('builder')">Try it free <span class="arr">→</span></span></div>
+        <div class="feat-card reveal delay-1"><div class="feat-label fl-ai">AI Powered</div><div class="feat-icon-wrap b">🎯</div><div class="feat-title">Smart Job Matching</div><p class="feat-desc">AI scans thousands of listings daily and surfaces only the roles that fit your skills, location, and salary — from Mumbai to villages in MP.</p><span class="feat-link" onclick="showPage('jobs')">Browse jobs <span class="arr">→</span></span></div>
+        <div class="feat-card reveal delay-2"><div class="feat-label fl-soon">Coming Soon</div><div class="feat-icon-wrap g">📈</div><div class="feat-title">Skill Gap Analysis</div><p class="feat-desc">Compare your profile against target roles and get a clear roadmap of exactly what to learn to close the gap and level up fast.</p><span class="feat-link" style="color:var(--text3);cursor:default;">Join waitlist <span class="arr">→</span></span></div>
+        <div class="feat-card reveal"><div class="feat-label fl-trust">Trust Layer</div><div class="feat-icon-wrap g">🛡️</div><div class="feat-title">Document Verification</div><p class="feat-desc">Upload certificates and IDs. Our AI validates authenticity and awards a Haas Trust Badge that boosts recruiter confidence instantly.</p><span class="feat-link">Learn more <span class="arr">→</span></span></div>
+        <div class="feat-card reveal delay-1"><div class="feat-label fl-core">Privacy First</div><div class="feat-icon-wrap b">🔐</div><div class="feat-title">Encrypted Data Storage</div><p class="feat-desc">All personal data is encrypted end-to-end. Optionally link your email for alerts. We never sell your data or run ads. Ever.</p><span class="feat-link">Our promise <span class="arr">→</span></span></div>
+        <div class="feat-card reveal delay-2"><div class="feat-label fl-ai">Real-time</div><div class="feat-icon-wrap b">🔔</div><div class="feat-title">Instant Job Alerts</div><p class="feat-desc">Get notified the moment a matching role is posted — before hundreds of other applicants. Timing is everything and Haas keeps you ahead.</p><span class="feat-link" onclick="showPage('pricing')">Upgrade for alerts <span class="arr">→</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="how-wrap">
+      <div class="reveal">
+        <div class="tag-line">The Process</div>
+        <h2 class="section-heading">Three steps to your <em>next offer</em></h2>
+        <p class="section-sub" style="margin-bottom:2.5rem;">Haas removes every barrier between your potential and your next job offer.</p>
+        <div class="how-steps">
+          <div class="how-step"><div class="hs-num">01</div><div class="hs-body"><div class="hs-title">Build your profile</div><p class="hs-desc">Enter your education, skills, and experience. Haas builds a polished, recruiter-ready résumé and securely stores your data.</p></div></div>
+          <div class="how-step"><div class="hs-num">02</div><div class="hs-body"><div class="hs-title">Get matched instantly</div><p class="hs-desc">Our AI scans thousands of listings and filters by your location, skills, and preferences — surfacing only the roles worth your time.</p></div></div>
+          <div class="how-step"><div class="hs-num">03</div><div class="hs-body"><div class="hs-title">Apply with confidence</div><p class="hs-desc">Preview your résumé, download as PDF, get your Trust Badge, and apply directly. Track everything in one clean dashboard.</p></div></div>
+        </div>
+      </div>
+      <div class="how-panel reveal delay-1">
+        <div class="panel-tabs">
+          <div class="ptab active" onclick="switchTab(this,'ps-form')">Build</div>
+          <div class="ptab" onclick="switchTab(this,'ps-jobs')">Jobs</div>
+          <div class="ptab" onclick="switchTab(this,'ps-verify')">Verify</div>
+        </div>
+        <div class="panel-body">
+          <div id="ps-form" class="panel-section active">
+            <div class="pf-row"><input class="pf" placeholder="Full Name" value="Kavya Gupta"><input class="pf" placeholder="Job Title" value="Software Engineer"></div>
+            <div class="pf-row"><input class="pf" placeholder="City" value="Bhopal"><input class="pf" placeholder="Experience" value="1 year"></div>
+            <div class="pf-row"><input class="pf" placeholder="Email" style="flex:2"></div>
+            <button class="p-gen-btn" onclick="showPage('builder')">✦ Generate Résumé — Preview + Download</button>
+          </div>
+          <div id="ps-jobs" class="panel-section">
+            <div class="p-job-list">
+              <div class="pjl"><div class="pjl-l"><div class="pjl-ico" style="background:#E84393;">T</div><div><div class="pjl-t">Frontend Engineer</div><div class="pjl-s">TCS · ₹7–9 LPA · Bhopal</div></div></div><span class="pct-badge h">94%</span></div>
+              <div class="pjl"><div class="pjl-l"><div class="pjl-ico" style="background:#0070F3;">I</div><div><div class="pjl-t">React Developer</div><div class="pjl-s">Infosys · ₹6–8 LPA · Remote</div></div></div><span class="pct-badge h">87%</span></div>
+              <div class="pjl"><div class="pjl-l"><div class="pjl-ico" style="background:#FF6B00;">J</div><div><div class="pjl-t">Full Stack Dev</div><div class="pjl-s">Juspay · ₹9–12 LPA · Bengaluru</div></div></div><span class="pct-badge m">78%</span></div>
+            </div>
+          </div>
+          <div id="ps-verify" class="panel-section">
+            <div class="p-verify-list">
+              <div class="pvl"><div class="pvl-ico">🎓</div><div><div class="pvl-name">B.Tech Certificate — RGPV</div><div class="pvl-status">AI verified · 2023</div></div><span class="pvl-badge ok">✓ Verified</span></div>
+              <div class="pvl"><div class="pvl-ico">🪪</div><div><div class="pvl-name">Aadhaar Card</div><div class="pvl-status">Identity confirmed</div></div><span class="pvl-badge ok">✓ Verified</span></div>
+              <div class="pvl"><div class="pvl-ico">📜</div><div><div class="pvl-name">AWS Cloud Practitioner</div><div class="pvl-status">Awaiting AI review</div></div><span class="pvl-badge pend">Pending</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-full" style="background:rgba(255,255,255,0.5);">
+    <div class="section-inner">
+      <div class="centered reveal">
+        <div class="tag-line">Success Stories</div>
+        <h2 class="section-heading">Real people, <em>real results</em></h2>
+      </div>
+      <div class="testi-wrap">
+        <div class="testi-card reveal"><div class="testi-stars">★★★★★</div><p class="testi-quote">I had no idea how to format my résumé. Haas built one in 2 minutes that got me 4 interview calls in the first week. The preview and download feature is seamless.</p><div class="testi-author"><div class="ta-av" style="background:linear-gradient(135deg,var(--green),var(--blue2));">RK</div><div><div class="ta-name">Rahul Kumar</div><div class="ta-role">Data Analyst · Hired at Wipro</div></div></div></div>
+        <div class="testi-card reveal delay-1"><div class="testi-stars">★★★★★</div><p class="testi-quote">I'm from a small village in MP and thought good jobs were only for city people. Haas matched me with remote roles and now I earn ₹8 LPA from home.</p><div class="testi-author"><div class="ta-av" style="background:linear-gradient(135deg,#D97706,#F59E0B);">AM</div><div><div class="ta-name">Anjali Mishra</div><div class="ta-role">Remote QA Engineer · Bengaluru Startup</div></div></div></div>
+        <div class="testi-card reveal delay-2"><div class="testi-stars">★★★★★</div><p class="testi-quote">The AI Trust Badge made companies take me seriously instantly. The verification system is a game-changer for fresh graduates with no prior work experience.</p><div class="testi-author"><div class="ta-av" style="background:linear-gradient(135deg,#6C47FF,var(--blue2));">SG</div><div><div class="ta-name">Sahil Gupta</div><div class="ta-role">Frontend Dev · Hired at Razorpay</div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="centered reveal" style="margin-bottom:3rem;">
+      <div class="tag-line">Privacy & Security</div>
+      <h2 class="section-heading">Your data is <em>yours alone</em></h2>
+      <p class="section-sub">Built from day one with security, transparency, and user trust at its absolute core.</p>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card reveal"><div class="tc-icon">🔐</div><div class="tc-title">End-to-End Encryption</div><p class="tc-desc">All data is encrypted at rest and in transit. Zero unauthorized access ever.</p></div>
+      <div class="trust-card reveal delay-1"><div class="tc-icon">🚫</div><div class="tc-title">Zero Data Selling</div><p class="tc-desc">We never sell your profile to third parties. No ads. No tracking. Period.</p></div>
+      <div class="trust-card reveal delay-2"><div class="tc-icon">📧</div><div class="tc-title">Optional Email Link</div><p class="tc-desc">Connect email for job alerts — or keep your account fully anonymous.</p></div>
+      <div class="trust-card reveal delay-3"><div class="tc-icon">🤖</div><div class="tc-title">AI Document Verification</div><p class="tc-desc">Credential validation that builds real employer trust instantly at scale.</p></div>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <div class="tag-line" style="justify-content:center;color:rgba(255,255,255,0.7);margin-bottom:0.85rem;"><span style="background:rgba(255,255,255,0.3);height:2px;width:20px;border-radius:2px;display:block;"></span>Get Started Today</div>
+    <h2 class="section-heading" style="color:#fff;margin-bottom:1rem;">Ready to land your <em style="color:var(--accent);">dream job?</em></h2>
+    <p class="section-sub" style="color:rgba(255,255,255,0.7);margin:0 auto 2.5rem;">Join thousands already on Haas. Free forever for core features. No credit card needed.</p>
+    <div class="cta-form">
+      <input class="cta-input" type="email" placeholder="Enter your email address" id="home-email">
+      <button class="cta-submit" onclick="joinWaitlist('home-email')">Join Free →</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-top">
+      <div><div class="fl-logo">Haas<span class="a">.</span></div><p class="fl-tagline">The AI-powered career platform bridging the gap between skills and opportunity for every job seeker in India.</p></div>
+      <div><div class="fc-title">Product</div><ul class="fc-links"><li><a onclick="showPage('builder')">Résumé Builder</a></li><li><a onclick="showPage('jobs')">Job Matching</a></li><li><a onclick="showPage('pricing')">Pricing</a></li><li><a>Skill Analysis</a></li></ul></div>
+      <div><div class="fc-title">Company</div><ul class="fc-links"><li><a>About Us</a></li><li><a>Blog</a></li><li><a>Careers</a></li><li><a>Press</a></li></ul></div>
+      <div><div class="fc-title">Legal</div><ul class="fc-links"><li><a>Privacy Policy</a></li><li><a>Terms of Service</a></li><li><a>Cookie Policy</a></li><li><a>Contact</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <div class="fc">© 2025 Haas Technologies Pvt. Ltd. All rights reserved.</div>
+      <div class="fbadges"><span class="fbadge">🇮🇳 Made in India</span><span class="fbadge">🔐 SOC 2</span><span class="fbadge">🛡️ GDPR Ready</span></div>
+    </div>
+  </footer>
+</div>
+
+<div id="page-builder" class="page">
+  <div class="builder-wrap">
+    <div class="b-sidebar">
+      <div class="bs-title">Résumé Builder</div>
+      <p class="bs-sub">Fill in your details. Live preview updates instantly.</p>
+      <div class="b-section">
+        <div class="b-section-title">Personal Info</div>
+        <div class="bfg"><div class="bfl">Full Name</div><input class="bfi" id="b-name" placeholder="e.g. Kavya Gupta" oninput="syncPreview()"></div>
+        <div class="bfg"><div class="bfl">Professional Title</div><input class="bfi" id="b-title" placeholder="e.g. Software Engineer" oninput="syncPreview()"></div>
+        <div class="bfr">
+          <div class="bfg"><div class="bfl">Email</div><input class="bfi" id="b-email" placeholder="your@email.com" oninput="syncPreview()"></div>
+          <div class="bfg"><div class="bfl">Phone</div><input class="bfi" id="b-phone" placeholder="+91 XXXXXXXXXX" oninput="syncPreview()"></div>
+        </div>
+        <div class="bfr">
+          <div class="bfg"><div class="bfl">City</div><input class="bfi" id="b-city" placeholder="Bhopal, MP" oninput="syncPreview()"></div>
+          <div class="bfg"><div class="bfl">LinkedIn / Portfolio</div><input class="bfi" id="b-link" placeholder="linkedin.com/in/..." oninput="syncPreview()"></div>
+        </div>
+      </div>
+      <div class="b-section">
+        <div class="b-section-title">Professional Summary</div>
+        <div class="bfg"><textarea class="bfi ta" id="b-summary" placeholder="Write a 2–3 line summary about your skills and career goals..." oninput="syncPreview()"></textarea></div>
+      </div>
+      <div class="b-section">
+        <div class="b-section-title">Education</div>
+        <div class="bfg"><div class="bfl">Degree & Field</div><input class="bfi" id="b-degree" placeholder="B.Tech in Computer Science" oninput="syncPreview()"></div>
+        <div class="bfr">
+          <div class="bfg"><div class="bfl">University</div><input class="bfi" id="b-uni" placeholder="RGPV, Bhopal" oninput="syncPreview()"></div>
+          <div class="bfg"><div class="bfl">Graduation Year</div><input class="bfi" id="b-year" placeholder="2023" oninput="syncPreview()"></div>
+        </div>
+        <div class="bfg"><div class="bfl">CGPA / Percentage</div><input class="bfi" id="b-cgpa" placeholder="8.5 / 10" oninput="syncPreview()"></div>
+      </div>
+      <div class="b-section">
+        <div class="b-section-title">Work Experience</div>
+        <div class="bfg"><div class="bfl">Job Title & Company</div><input class="bfi" id="b-exp-role" placeholder="Junior Developer at XYZ Corp" oninput="syncPreview()"></div>
+        <div class="bfg"><div class="bfl">Duration</div><input class="bfi" id="b-exp-dur" placeholder="June 2023 – Present" oninput="syncPreview()"></div>
+        <div class="bfg"><div class="bfl">Key Achievements</div><textarea class="bfi ta" id="b-exp-desc" placeholder="• Built responsive dashboard using React and Node.js&#10;• Reduced page load time by 40%..." oninput="syncPreview()"></textarea></div>
+      </div>
+      <div class="b-section">
+        <div class="b-section-title">Skills</div>
+        <div class="skill-wrap">
+          <input class="bfi" id="skill-inp" placeholder="Add a skill, press Enter" onkeydown="if(event.key==='Enter')addSkill()">
+          <button class="skill-add-btn" onclick="addSkill()">+</button>
+        </div>
+        <div class="skills-display" id="skills-box"></div>
+      </div>
+      <div class="b-section">
+        <div class="b-section-title">Template Style</div>
+        <div class="tmpl-grid">
+          <div class="tmpl-opt active" onclick="setTemplate(this,'Classic')">Classic</div>
+          <div class="tmpl-opt" onclick="setTemplate(this,'Modern')">Modern</div>
+          <div class="tmpl-opt" onclick="setTemplate(this,'Minimal')">Minimal</div>
+          <div class="tmpl-opt" onclick="setTemplate(this,'Executive')">Executive</div>
+        </div>
+      </div>
+      <button class="gen-btn" onclick="handleGenerate()">✦ Generate & Preview Résumé</button>
+    </div>
+
+    <div class="b-preview-area">
+      <div class="preview-topbar">
+        <div class="preview-topbar-title">Live Preview</div>
+        <div class="preview-action-btns">
+          <button class="pab see" onclick="openModal()">👁 Full Screen Preview</button>
+          <button class="pab dl" onclick="downloadResume()">⬇ Download PDF</button>
+        </div>
+      </div>
+
+      <div class="resume-score-bar">
+        <div class="rsb-label">AI Resume Score</div>
+        <div class="rsb-bar"><div class="rsb-fill" id="score-fill" style="width:20%;"></div></div>
+        <div class="rsb-score" id="score-val">2/10</div>
+      </div>
+
+      <div class="resume-doc" id="live-resume">
+        <div class="rd-hd">
+          <div class="rd-name" id="p-name">Your Name</div>
+          <div class="rd-role" id="p-title">Professional Title</div>
+          <div class="rd-contact-row">
+            <div class="rd-ci">📧 <span id="p-email">your@email.com</span></div>
+            <div class="rd-ci">📞 <span id="p-phone">+91 XXXXXXXXXX</span></div>
+            <div class="rd-ci">📍 <span id="p-city">Your City</span></div>
+          </div>
+        </div>
+        <div class="rd-bd">
+          <div class="rd-sec">
+            <div class="rd-sec-title">Professional Summary</div>
+            <div class="rd-item"><p class="rd-item-desc" id="p-summary">A motivated professional with a passion for technology and problem-solving, seeking to leverage skills and knowledge to drive impactful results.</p></div>
+          </div>
+          <div class="rd-sec">
+            <div class="rd-sec-title">Education</div>
+            <div class="rd-item">
+              <div class="rd-item-t" id="p-degree">Degree in Field — University Name</div>
+              <div class="rd-item-sub" id="p-year">Graduation Year | CGPA: —</div>
+            </div>
+          </div>
+          <div class="rd-sec">
+            <div class="rd-sec-title">Work Experience</div>
+            <div class="rd-item">
+              <div class="rd-item-t" id="p-exp-role">Job Title at Company</div>
+              <div class="rd-item-sub" id="p-exp-dur">Duration</div>
+              <div class="rd-item-desc" id="p-exp-desc">Key responsibilities and achievements will appear here...</div>
+            </div>
+          </div>
+          <div class="rd-sec">
+            <div class="rd-sec-title">Skills</div>
+            <div class="rd-skills-wrap" id="p-skills"><span class="rd-skill">Your skills appear here</span></div>
+          </div>
+          <div class="rd-sec" id="link-sec" style="display:none;">
+            <div class="rd-sec-title">Links</div>
+            <div class="rd-item"><div class="rd-item-desc" id="p-link" style="color:var(--blue2);"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-jobs" class="page">
+  <div class="jobs-wrap">
+    <div class="j-sidebar">
+      <div class="js-title">Filters</div>
+      <div class="jf-group"><div class="jf-label">Job Type</div><div class="jf-opts"><label class="jf-opt"><input type="checkbox" checked> Full-time</label><label class="jf-opt"><input type="checkbox"> Part-time</label><label class="jf-opt"><input type="checkbox" checked> Remote</label><label class="jf-opt"><input type="checkbox"> Internship</label></div></div>
+      <div class="jf-group"><div class="jf-label">Experience</div><div class="jf-opts"><label class="jf-opt"><input type="checkbox" checked> Fresher (0–1 yr)</label><label class="jf-opt"><input type="checkbox" checked> Junior (1–3 yrs)</label><label class="jf-opt"><input type="checkbox"> Mid-level (3–5 yrs)</label><label class="jf-opt"><input type="checkbox"> Senior (5+ yrs)</label></div></div>
+      <div class="jf-group"><div class="jf-label">Salary</div><div class="jf-opts"><label class="jf-opt"><input type="checkbox"> Under ₹5 LPA</label><label class="jf-opt"><input type="checkbox" checked> ₹5–10 LPA</label><label class="jf-opt"><input type="checkbox" checked> ₹10–20 LPA</label><label class="jf-opt"><input type="checkbox"> ₹20 LPA+</label></div></div>
+      <div class="jf-group"><div class="jf-label">Location</div><div class="jf-opts"><label class="jf-opt"><input type="checkbox" checked> Remote</label><label class="jf-opt"><input type="checkbox" checked> Bhopal</label><label class="jf-opt"><input type="checkbox"> Bengaluru</label><label class="jf-opt"><input type="checkbox"> Mumbai</label><label class="jf-opt"><input type="checkbox"> Pune</label></div></div>
+    </div>
+    <div class="j-main">
+      <div class="j-searchbar"><input class="j-si" placeholder="Search job title, company, or skill..." value="Software Engineer"><button class="j-sb" onclick="showToast('🔍 Searching latest matches...')">Search</button></div>
+      <div class="j-meta">Showing <strong>6 matched jobs</strong> based on your profile · Sorted by AI match score</div>
+      <div class="job-cards">
+        <div class="job-card hot"><div class="jc-top"><div class="jc-left"><div class="jc-logo" style="background:linear-gradient(135deg,#E84393,#FF6B9D);">T</div><div class="jc-info"><div class="jc-name">Frontend Engineer — React</div><div class="jc-company">Tata Consultancy Services (TCS)</div></div></div><div class="jc-right"><span class="match-pct high">94% match</span><span class="new-tag">New</span></div></div><div class="jc-chips"><span class="jcc">💼 Full-time</span><span class="jcc">📍 Bhopal / Remote</span><span class="jcc">🎓 0–2 years</span><span class="jcc">✓ Trust Badge Preferred</span></div><p class="jc-desc">Build and maintain high-performance React applications for enterprise clients. Work with a cross-functional team on cutting-edge web products. Excellent opportunity for freshers with strong fundamentals.</p><div class="jc-foot"><div class="jc-salary">₹7 – 9 LPA</div><div class="jc-actions"><button class="j-save-btn">☆ Save</button><button class="j-apply-btn" onclick="showToast('🎉 Application submitted to TCS!')">Apply Now</button></div></div></div>
+        <div class="job-card"><div class="jc-top"><div class="jc-left"><div class="jc-logo" style="background:#0070F3;">I</div><div class="jc-info"><div class="jc-name">React Developer — Digital Unit</div><div class="jc-company">Infosys</div></div></div><div class="jc-right"><span class="match-pct high">87% match</span></div></div><div class="jc-chips"><span class="jcc">💼 Full-time</span><span class="jcc">📍 Remote</span><span class="jcc">🎓 1–3 years</span></div><p class="jc-desc">Join the Infosys Digital team to develop responsive web applications. Strong React and REST API skills required. Excellent growth path with international project exposure.</p><div class="jc-foot"><div class="jc-salary">₹6 – 8 LPA</div><div class="jc-actions"><button class="j-save-btn">☆ Save</button><button class="j-apply-btn" onclick="showToast('🎉 Applied to Infosys!')">Apply Now</button></div></div></div>
+        <div class="job-card"><div class="jc-top"><div class="jc-left"><div class="jc-logo" style="background:linear-gradient(135deg,#FF6B00,#FF9500);">J</div><div class="jc-info"><div class="jc-name">Full Stack Engineer</div><div class="jc-company">Juspay Technologies</div></div></div><div class="jc-right"><span class="match-pct high">78% match</span><span class="new-tag">Hot</span></div></div><div class="jc-chips"><span class="jcc">💼 Full-time</span><span class="jcc">📍 Bengaluru / Hybrid</span><span class="jcc">🎓 1–3 years</span></div><p class="jc-desc">Build payment infrastructure used by millions. High-impact role at one of India's fastest-growing fintech companies. Work with React, Node.js, and Haskell.</p><div class="jc-foot"><div class="jc-salary">₹9 – 14 LPA</div><div class="jc-actions"><button class="j-save-btn">☆ Save</button><button class="j-apply-btn" onclick="showToast('🎉 Applied to Juspay!')">Apply Now</button></div></div></div>
+        <div class="job-card"><div class="jc-top"><div class="jc-left"><div class="jc-logo" style="background:linear-gradient(135deg,#1A7A4A,#0D9E78);">Z</div><div class="jc-info"><div class="jc-name">Node.js Backend Developer</div><div class="jc-company">Zoho Corporation</div></div></div><div class="jc-right"><span class="match-pct med">71% match</span></div></div><div class="jc-chips"><span class="jcc">💼 Full-time</span><span class="jcc">📍 Chennai / Remote</span><span class="jcc">🎓 1–2 years</span></div><p class="jc-desc">Develop scalable backend services for Zoho's SaaS product suite. Stable company with excellent work-life balance and learning opportunities.</p><div class="jc-foot"><div class="jc-salary">₹5 – 8 LPA</div><div class="jc-actions"><button class="j-save-btn">☆ Save</button><button class="j-apply-btn" onclick="showToast('🎉 Applied to Zoho!')">Apply Now</button></div></div></div>
+        <div class="job-card"><div class="jc-top"><div class="jc-left"><div class="jc-logo" style="background:linear-gradient(135deg,#6C47FF,#0EA5E9);">R</div><div class="jc-info"><div class="jc-name">Software Engineer — Payments</div><div class="jc-company">Razorpay</div></div></div><div class="jc-right"><span class="match-pct med">68% match</span></div></div><div class="jc-chips"><span class="jcc">💼 Full-time</span><span class="jcc">📍 Bengaluru</span><span class="jcc">🎓 0–2 years</span></div><p class="jc-desc">Work on Razorpay's core payment systems handling millions of daily transactions. High ownership culture with exceptional compensation and learning curve.</p><div class="jc-foot"><div class="jc-salary">₹10 – 16 LPA</div><div class="jc-actions"><button class="j-save-btn">☆ Save</button><button class="j-apply-btn" onclick="showToast('🎉 Applied to Razorpay!')">Apply Now</button></div></div></div>
+        <div class="job-card"><div class="jc-top"><div class="jc-left"><div class="jc-logo" style="background:linear-gradient(135deg,#2D3748,#4A5568);">W</div><div class="jc-info"><div class="jc-name">Python Developer — AI/ML</div><div class="jc-company">Wipro Technologies</div></div></div><div class="jc-right"><span class="match-pct med">65% match</span></div></div><div class="jc-chips"><span class="jcc">💼 Full-time</span><span class="jcc">📍 Pune / Hybrid</span><span class="jcc">🎓 1–3 years</span></div><p class="jc-desc">Develop AI/ML solutions for enterprise clients. Python, pandas, scikit-learn experience preferred. Cloud platform exposure is a plus.</p><div class="jc-foot"><div class="jc-salary">₹6 – 10 LPA</div><div class="jc-actions"><button class="j-save-btn">☆ Save</button><button class="j-apply-btn" onclick="showToast('🎉 Applied to Wipro!')">Apply Now</button></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-pricing" class="page">
+  <div class="pricing-wrap">
+    <div class="centered reveal">
+      <div class="tag-line">Pricing</div>
+      <h2 class="section-heading">Simple, honest <em>pricing</em></h2>
+      <p class="section-sub" style="margin:0 auto;">Start free. Upgrade when you're ready. No hidden fees, no surprises.</p>
+    </div>
+    <div class="plan-cards">
+  <div class="plan-card reveal">
+    <div class="pn-label">Free</div>
+    <div class="pn-price"><span class="curr">₹</span>0<span class="per"> / month</span></div>
+    <p class="pn-tagline">Essential tools for beginners starting their career journey.</p>
+    <div class="pn-div"></div>
+    <ul class="pn-feats">
+      <li><span class="chk-g">✓</span>1 AI-generated résumé</li>
+      <li><span class="chk-g">✓</span>10 job matches per day</li>
+      <li><span class="chk-g">✓</span>Standard template access</li>
+      <li><span class="chk-g">✓</span>PDF download</li>
+      <li class="off"><span class="chk-n">✗</span>Priority support</li>
+      <li class="off"><span class="chk-n">✗</span>Document verification</li>
+      <li class="off"><span class="chk-n">✗</span>Skill analytics</li>
+    </ul>
+    <button class="pn-btn outline" onclick="showToast('✅ Started with Free plan')">Get Started</button>
+  </div>
+
+  <div class="plan-card featured reveal delay-1">
+    <div class="pop-badge">✦ Recommended</div>
+    <div class="pn-label">Standard</div>
+    <div class="pn-price"><span class="curr">₹</span>500<span class="per"> / month</span></div>
+    <p class="pn-tagline">Boost your search with better tools and faster matching.</p>
+    <div class="pn-div"></div>
+    <ul class="pn-feats">
+      <li><span class="chk-g">✓</span>Unlimited résumé versions</li>
+      <li><span class="chk-g">✓</span>50 job matches per day</li>
+      <li><span class="chk-g">✓</span>All standard templates</li>
+      <li><span class="chk-g">✓</span>Document verification (Basic)</li>
+      <li><span class="chk-g">✓</span>Email support</li>
+      <li><span class="chk-g">✓</span>Ad-free experience</li>
+      <li class="off"><span class="chk-n">✗</span>Priority job alerts</li>
+    </ul>
+    <button class="pn-btn solid" onclick="goToPurchase('Standard Plan', '₹500 / month')">Start Standard — ₹500/mo</button>
+  </div>
+
+  <div class="plan-card reveal delay-2">
+    <div class="pn-label">Premium</div>
+    <div class="pn-price"><span class="curr">₹</span>1500<span class="per"> / month</span></div>
+    <p class="pn-tagline">The ultimate toolkit for high-growth career professionals.</p>
+    <div class="pn-div"></div>
+    <ul class="pn-feats">
+      <li><span class="chk-g">✓</span>Unlimited job matching</li>
+      <li><span class="chk-g">✓</span>Advanced skill gap analysis</li>
+      <li><span class="chk-g">✓</span>Priority AI document verification</li>
+      <li><span class="chk-g">✓</span>Exclusive premium templates</li>
+      <li><span class="chk-g">✓</span>Instant priority job alerts</li>
+      <li><span class="chk-g">✓</span>Dedicated 24/7 support</li>
+      <li><span class="chk-g">✓</span>Interview prep roadmap</li>
+    </ul>
+    <button class="pn-btn outline" onclick="goToPurchase('Premium Plan', '₹1500 / month')">Start Premium — ₹1500/mo</button>
+  </div>
+    </div>
+    <div class="faq-wrap">
+      <div class="centered" style="margin-bottom:2.5rem;"><div class="tag-line">FAQ</div><h2 class="section-heading" style="font-size:2rem;">Frequently asked <em>questions</em></h2></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Is Haas really free to start?<span class="faq-arrow">+</span></div><div class="faq-a">Yes, completely. Create one résumé, get 10 job matches per day, and verify one document — all without paying a single rupee. Upgrade only when you need more.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">How does AI document verification work?<span class="faq-arrow">+</span></div><div class="faq-a">Upload a photo or scan of your certificate or ID. Our AI analyzes the document's authenticity markers and cross-references known formats. Verified documents earn a Haas Trust Badge visible to all employers on the platform.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Can I use Haas from a small town or village?<span class="faq-arrow">+</span></div><div class="faq-a">Absolutely. Haas is built for every Indian job seeker — not just metro city residents. Our matching covers 500+ cities and villages, and we prioritize remote-friendly opportunities accessible to anyone.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Is my personal data safe with Haas?<span class="faq-arrow">+</span></div><div class="faq-a">Your data is encrypted end-to-end, stored on secure servers, and never shared or sold to any third party. You control what's visible and can delete your entire account at any time.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Can I download my résumé as a PDF?<span class="faq-arrow">+</span></div><div class="faq-a">Yes! Every plan — including Free — lets you preview your résumé in full screen and download it as a professionally formatted PDF. Premium users get access to 20+ template designs.</div></div>
+    </div>
+  </div>
+
+  <div id="page-score" class="page">
+    <div class="section">
+      <div class="centered">
+        <div class="tag-line">Résumé Analysis</div>
+        <h2 class="section-heading">Get your <em>AI Match Score</em></h2>
+        <p class="section-sub">Upload your resume to receive an instant critique and match score against top job roles.</p>
+      </div>
+
+      <!-- Upload Area -->
+      <div class="upload-zone" id="drop-zone" ondrop="handleDrop(event)" ondragover="allowDrop(event)">
+        <div class="upload-content">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><path d="M12 16V8M9 11l3-3 3 3M21 16v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/></svg>
+          <p>Drag & drop your resume here</p>
+          <span>or</span>
+          <button class="btn-secondary" onclick="document.getElementById('file-input').click()">Browse from Device</button>
+          <input type="file" id="file-input" hidden accept=".pdf,.doc,.docx" onchange="handleFileSelect(event)">
+          <p style="font-size: 0.7rem; color: var(--text3); margin-top: 1rem;">Supports PDF, DOCX (Max 5MB)</p>
+        </div>
+      </div>
+
+      <!-- Scoring Results (Hidden until upload) -->
+      <div id="score-results" style="display:none; max-width: 600px; margin: 2rem auto;">
+        <div class="resume-score-bar" style="max-width:100%;">
+          <div class="rsb-label">Your Overall Match Score</div>
+          <div class="rsb-bar"><div class="rsb-fill" id="upload-score-fill" style="width:0%;"></div></div>
+          <div class="rsb-score" id="upload-score-val">0/10</div>
+        </div>
+        <div id="feedback-list" style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+          <!-- AI feedback injected here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <h2 class="section-heading" style="color:#fff;margin-bottom:1rem;">Start your journey <em style="color:var(--accent);">today</em></h2>
+    <p class="section-sub" style="color:rgba(255,255,255,0.7);margin:0 auto 2.5rem;">Free forever for core features. No credit card required.</p>
+    <div class="cta-form"><input class="cta-input" type="email" placeholder="Enter your email" id="pricing-email"><button class="cta-submit" onclick="joinWaitlist('pricing-email')">Join Free →</button></div>
+  </div>
+  <footer>
+    <div class="footer-top">
+      <div><div class="fl-logo">Haas<span class="a">.</span></div><p class="fl-tagline">Bridging the gap between skills and opportunity for every job seeker in India.</p></div>
+      <div><div class="fc-title">Product</div><ul class="fc-links"><li><a onclick="showPage('builder')">Résumé Builder</a></li><li><a onclick="showPage('jobs')">Job Matching</a></li><li><a onclick="showPage('pricing')">Pricing</a></li></ul></div>
+      <div><div class="fc-title">Company</div><ul class="fc-links"><li><a>About Us</a></li><li><a>Blog</a></li><li><a>Careers</a></li></ul></div>
+      <div><div class="fc-title">Legal</div><ul class="fc-links"><li><a>Privacy Policy</a></li><li><a>Terms</a></li><li><a>Contact</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><div class="fc">© 2025 Haas Technologies Pvt. Ltd.</div><div class="fbadges"><span class="fbadge">🇮🇳 Made in India</span><span class="fbadge">🔐 SOC 2</span></div></div>
+  </footer>
+</div>
+
+<!-- ══════ PURCHASE / CHECKOUT PAGE ══════ -->
+<div id="page-purchase" class="page">
+  <div class="login-wrap">
+    <div class="login-card" style="max-width: 500px;">
+      <div class="lc-header">
+        <h2 id="summary-plan-name">Standard Plan</h2>
+        <p id="summary-plan-price" style="font-size: 1.2rem; font-weight: 700; color: var(--green);">₹500 / month</p>
+      </div>
+      
+      <form class="lc-form" onsubmit="processPayment(event)">
+        <div class="lc-group">
+          <label>Full Name</label>
+          <input type="text" placeholder="Kavya Gupta" required>
+        </div>
+        <div class="lc-group">
+          <label>Billing Email</label>
+          <input type="email" placeholder="you@example.com" required>
+        </div>
+        <button type="submit" class="lc-submit" id="pay-btn">Confirm & Pay</button>
+        <button type="button" class="nav-signin" style="width:100%; margin-top:0.5rem;" onclick="showPage('pricing')">Change Plan</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function processPayment(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.textContent = 'Processing...';
+    
+    // Simulate payment processing
+    setTimeout(() => {
+      showToast('🎉 Payment successful! Redirecting to dashboard...');
+      btn.textContent = 'Confirm & Pay Now';
+      showPage('home'); 
+    }, 2000);
+  }
+</script>
+
+<div class="modal-overlay" id="modal" onclick="handleModalClick(event)">
+  <div class="modal-box">
+    <div class="modal-topbar">
+      <div class="modal-title">📄 Résumé Preview</div>
+      <div class="modal-actions">
+        <button class="modal-dl-btn" onclick="downloadResume()">⬇ Download PDF</button>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+    </div>
+    <div class="modal-resume-wrap" id="modal-content">
+      </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ Done!</div>
+
+</div><script>
+// Global state variables for simulated backend authentication context
+let isLoggedIn = false;
+let currentUser = { name: "Kavya Gupta", initial: "KG" };
+
+// Dynamic navbar generator based on authentication states
+function updateNavbarUI() {
+  const navRight = document.querySelector('.nav-right');
+  if (!navRight) return;
+
+  if (isLoggedIn) {
+    navRight.innerHTML = `
+      <div class="nav-user" onclick="toggleUserDropdown(event)">
+        <div class="nav-avatar">${currentUser.initial}</div>
+        <span class="nav-uname">${currentUser.name}</span>
+        <div class="user-dropdown" id="nav-dropdown">
+          <a onclick="showPage('builder')">My Dashboard</a>
+          <a onclick="showPage('jobs')">Matched Jobs</a>
+          <hr>
+          <a onclick="handleLogout(event)" style="color: var(--red);">Log Out</a>
+        </div>
+      </div>
+    `;
+  } else {
+    navRight.innerHTML = `
+      <button class="nav-signin" onclick="showPage('login'); toggleAuthMode('login');">Log in</button>
+    `;
+  }
+}
+
+function toggleUserDropdown(e) {
+  e.stopPropagation();
+  const dropdown = document.getElementById('nav-dropdown');
+  if (dropdown) dropdown.classList.toggle('show');
+}
+
+// Global hook to close dropdown context when clicking layout area
+document.addEventListener('click', () => {
+  const dropdown = document.getElementById('nav-dropdown');
+  if (dropdown) dropdown.classList.remove('show');
+});
+
+function handleLogout(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  isLoggedIn = false;
+  updateNavbarUI();
+  
+  // Clear the builder inputs
+  document.getElementById('b-name').value = '';
+  syncPreview();
+  
+  showPage('home');
+  showToast('👋 Logged out successfully.');
+}
+
+// ══════ CANVAS BACKGROUND ANIMATION ══════
+(function(){
+  const c = document.getElementById('bg-canvas');
+  const ctx = c.getContext('2d');
+  let W, H, orbs = [], particles = [];
+
+  function resize(){
+    W = c.width = window.innerWidth;
+    H = c.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const orbConfig = [
+    {x:0.15,y:0.2,r:320,c1:'rgba(14,165,233,0.12)',c2:'rgba(14,165,233,0)',vx:0.15,vy:0.08},
+    {x:0.8,y:0.7,r:380,c1:'rgba(13,158,120,0.11)',c2:'rgba(13,158,120,0)',vx:-0.12,vy:0.1},
+    {x:0.5,y:0.45,r:280,c1:'rgba(167,243,208,0.08)',c2:'rgba(167,243,208,0)',vx:0.09,vy:-0.07},
+    {x:0.9,y:0.15,r:250,c1:'rgba(186,230,253,0.1)',c2:'rgba(186,230,253,0)',vx:-0.1,vy:0.06},
+    {x:0.05,y:0.85,r:300,c1:'rgba(13,158,120,0.08)',c2:'rgba(13,158,120,0)',vx:0.07,vy:-0.09},
+  ];
+  orbs = orbConfig.map(o => ({...o, cx:o.x*W, cy:o.y*H}));
+
+  for(let i=0;i<38;i++){
+    particles.push({
+      x: Math.random()*100,
+      y: Math.random()*100,
+      r: Math.random()*2.5 + 0.5,
+      vx: (Math.random()-0.5)*0.025,
+      vy: (Math.random()-0.5)*0.025,
+      a: Math.random()*0.35 + 0.05,
+      color: Math.random() > 0.5 ? '#0D9E78' : '#0EA5E9'
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    orbs.forEach(o => {
+      o.cx += o.vx;
+      o.cy += o.vy;
+      if(o.cx < -o.r) o.cx = W + o.r;
+      if(o.cx > W + o.r) o.cx = -o.r;
+      if(o.cy < -o.r) o.cy = H + o.r;
+      if(o.cy > H + o.r) o.cy = -o.r;
+      const g = ctx.createRadialGradient(o.cx,o.cy,0,o.cx,o.cy,o.r);
+      g.addColorStop(0, o.c1);
+      g.addColorStop(1, o.c2);
+      ctx.beginPath();
+      ctx.arc(o.cx, o.cy, o.r, 0, Math.PI*2);
+      ctx.fillStyle = g;
+      ctx.fill();
+    });
+
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if(p.x < 0) p.x = 100;
+      if(p.x > 100) p.x = 0;
+      if(p.y < 0) p.y = 100;
+      if(p.y > 100) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x/100*W, p.y/100*H, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.a;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    });
+
+    ctx.strokeStyle = 'rgba(13,158,120,0.04)';
+    ctx.lineWidth = 1;
+    for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ══════ NAV SCROLL ══════
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ══════ OAUTH 2.0 CONFIGURATION & ACTUAL REDIRECT HANDLERS ══════
+const OAUTH_CONFIG = {
+  google: {
+    clientId: '150072968451-48pmg6pn1365n0flbb6n0bdiuj3fj5je.apps.googleusercontent.com',
+    redirectUri: 'http://127.0.0.1:5500/hass%20updates.html',
+    authEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
+    scope: 'openid email profile'
+  },
+  github: {
+    clientId: 'Ov23liJpGZGhU8SbZ0jO',
+    redirectUri: 'http://127.0.0.1:5500/auth/github/callback',
+    authEndpoint: 'https://github.com/login/oauth/authorize',
+    scope: 'user:email'
+  }
+};
+
+function generateStateToken() {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+function saveAuthState(provider, state) {
+  sessionStorage.setItem(`oauth_state_${provider}`, state);
+  sessionStorage.setItem(`oauth_time_${provider}`, Date.now().toString());
+}
+
+function verifyAuthState(provider, state) {
+  const savedState = sessionStorage.getItem(`oauth_state_${provider}`);
+  const savedTime = parseInt(sessionStorage.getItem(`oauth_time_${provider}`)) || 0;
+  const isExpired = Date.now() - savedTime > 10 * 60 * 1000;
+  
+  sessionStorage.removeItem(`oauth_state_${provider}`);
+  sessionStorage.removeItem(`oauth_time_${provider}`);
+  
+  return !isExpired && savedState === state;
+}
+
+// Actual Redirect to Google
+function handleGoogleSignIn(e) {
+  e.preventDefault();
+  const btn = e.target.closest('.oauth-btn');
+  const originalHTML = btn.innerHTML;
+  
+  btn.innerHTML = '<svg style="width:18px;height:18px;animation:spin 1s linear infinite;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Redirecting...';
+  btn.style.pointerEvents = 'none';
+  btn.style.opacity = '0.7';
+  
+  try {
+    const state = generateStateToken();
+    saveAuthState('google', state);
+    
+    const params = new URLSearchParams({
+      client_id: OAUTH_CONFIG.google.clientId,
+      redirect_uri: OAUTH_CONFIG.google.redirectUri,
+      response_type: 'code',
+      scope: OAUTH_CONFIG.google.scope,
+      state: state,
+      access_type: 'offline',
+      prompt: 'consent'
+    });
+    
+    const authUrl = `${OAUTH_CONFIG.google.authEndpoint}?${params.toString()}`;
+    showToast('🔐 Taking you to Google...');
+    setTimeout(() => { window.location.href = authUrl; }, 800);
+    
+  } catch (error) {
+    console.error('Google OAuth Error:', error);
+    btn.innerHTML = originalHTML;
+    btn.style.pointerEvents = 'auto';
+    btn.style.opacity = '1';
+    showToast('❌ Error starting Google login.');
+  }
+}
+
+// Actual Redirect to GitHub
+function handleGitHubSignIn(e) {
+  e.preventDefault();
+  const btn = e.target.closest('.oauth-btn');
+  const originalHTML = btn.innerHTML;
+  
+  btn.innerHTML = '<svg style="width:18px;height:18px;animation:spin 1s linear infinite;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Redirecting...';
+  btn.style.pointerEvents = 'none';
+  btn.style.opacity = '0.7';
+  
+  try {
+    const state = generateStateToken();
+    saveAuthState('github', state);
+    
+    const params = new URLSearchParams({
+      client_id: OAUTH_CONFIG.github.clientId,
+      redirect_uri: OAUTH_CONFIG.github.redirectUri,
+      scope: OAUTH_CONFIG.github.scope,
+      state: state,
+      allow_signup: 'true'
+    });
+    
+    const authUrl = `${OAUTH_CONFIG.github.authEndpoint}?${params.toString()}`;
+    showToast('🔐 Taking you to GitHub...');
+    setTimeout(() => { window.location.href = authUrl; }, 800);
+    
+  } catch (error) {
+    console.error('GitHub OAuth Error:', error);
+    btn.innerHTML = originalHTML;
+    btn.style.pointerEvents = 'auto';
+    btn.style.opacity = '1';
+    showToast('❌ Error starting GitHub login.');
+  }
+}
+
+// Catch the returning redirect from the OAuth Provider
+function handleOAuthCallback() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const state = params.get('state');
+    const error = params.get('error');
+    
+    let provider = null;
+    if (window.location.href.includes('github')) {
+      provider = 'github';
+    } else if (code || window.location.href.includes('google')) {
+      provider = 'google';
+    }
+    
+    if (error) {
+      console.error(`OAuth Error from ${provider}:`, error);
+      if (typeof showToast === 'function') {
+        showToast(`❌ ${provider} sign-in failed: ${error}`);
+      }
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
+    
+    if (code && state && provider) {
+      // Validate CSRF state
+      let stateValid = false;
+      try {
+        stateValid = verifyAuthState(provider, state);
+      } catch (e) { stateValid = false; }
+
+      if (!stateValid) {
+        console.warn('State verification failed. Falling back to demo flow.');
+      }
+      
+      sessionStorage.setItem('oauth_code', code);
+      sessionStorage.setItem('oauth_provider', provider);
+      
+      // Successfully returned from OAuth! Set the user state.
+      setTimeout(() => {
+        isLoggedIn = true;
+        currentUser.name = "Kavya Gupta"; // In a real app, this comes from the backend code exchange
+        currentUser.initial = "KG";
+        
+        updateNavbarUI();
+        document.getElementById('b-name').value = currentUser.name;
+        syncPreview();
+
+        if (typeof showToast === 'function') {
+          showToast(`🎉 Signed in with ${provider}!`);
+        }
+        
+        // Clean the URL so the authorization code is removed from the address bar
+        const cleanUrl = window.location.href.split('?')[0].replace(/#.*$/, '');
+        window.history.replaceState({}, document.title, cleanUrl);
+        
+        if (typeof showPage === 'function') {
+          setTimeout(() => { showPage('builder'); }, 600);
+        }
+      }, 500);
+    }
+  } catch (err) {
+    console.error('OAuth Callback Error:', err);
+  }
+}
+
+// ══════ SPINNER ANIMATION ══════
+const style = document.createElement('style');
+style.textContent = '@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}';
+document.head.appendChild(style);
+
+// ══════ PAGE ROUTING ══════
+function showPage(name){
+  try {
+    const allPages = document.querySelectorAll('.page');
+    if (allPages.length === 0) return;
+    allPages.forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    
+    const targetPage = document.getElementById('page-'+name);
+    if (!targetPage) return;
+    targetPage.classList.add('active');
+    
+    const navLink = document.getElementById('nl-'+name);
+    if(navLink) navLink.classList.add('active');
+    
+    window.scrollTo({top:0,behavior:'smooth'});
+    setTimeout(initReveal, 60);
+  } catch (err) {
+    console.error('Error in showPage:', err);
+  }
+}
+
+// ══════ AUTH LOGIC (EMAIL LOGIN / SIGN UP) ══════
+let currentAuthMode = 'login';
+function toggleAuthMode(mode) {
+  currentAuthMode = mode;
+  document.querySelectorAll('.lc-tab').forEach(t => t.classList.remove('active'));
+  
+  const title = document.getElementById('auth-title');
+  const desc = document.getElementById('auth-desc');
+  const nameGroup = document.getElementById('group-name');
+  const nameInput = document.getElementById('auth-name');
+  const forgotLink = document.getElementById('forgot-link');
+  const submitBtn = document.getElementById('auth-submit');
+
+  if(mode === 'login') {
+    document.getElementById('tab-login').classList.add('active');
+    title.style.opacity = 0;
+    setTimeout(() => { title.textContent = 'Welcome back'; title.style.opacity = 1; }, 150);
+    desc.textContent = 'Log in to Haas to access your dashboard.';
+    nameGroup.style.display = 'none';
+    nameInput.removeAttribute('required');
+    forgotLink.style.display = 'block';
+    submitBtn.textContent = 'Log In';
+  } else {
+    document.getElementById('tab-signup').classList.add('active');
+    title.style.opacity = 0;
+    setTimeout(() => { title.textContent = 'Create an account'; title.style.opacity = 1; }, 150);
+    desc.textContent = 'Join Haas and accelerate your career.';
+    nameGroup.style.display = 'flex';
+    nameInput.setAttribute('required', 'true');
+    forgotLink.style.display = 'none';
+    submitBtn.textContent = 'Sign Up Free';
+  }
+}
+
+function togglePassword() {
+  const pwInput = document.getElementById('auth-pw');
+  const pwIcon = document.getElementById('pw-icon');
+  
+  if(pwInput.type === 'password') {
+    pwInput.type = 'text';
+    pwIcon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`;
+  } else {
+    pwInput.type = 'password';
+    pwIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+  }
+}
+
+function handleAuthSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('auth-submit');
+  const originalText = btn.textContent;
+  
+  btn.textContent = 'Please wait...';
+  btn.style.opacity = '0.8';
+  btn.style.pointerEvents = 'none';
+  
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    
+    isLoggedIn = true;
+    if(currentAuthMode === 'signup') {
+      const nameVal = document.getElementById('auth-name').value.trim();
+      currentUser.name = nameVal || "Kavya Gupta";
+      currentUser.initial = currentUser.name.split(' ').map(n=>n[0]).join('').toUpperCase().substring(0,2) || "KG";
+      showToast('🎉 Account created successfully!');
+    } else {
+      currentUser.name = "Kavya Gupta";
+      currentUser.initial = "KG";
+      showToast('✅ Successfully logged in!');
+    }
+    
+    document.getElementById('b-name').value = currentUser.name;
+    syncPreview();
+    
+    updateNavbarUI();
+    setTimeout(() => { showPage('builder'); }, 600);
+  }, 1200);
+}
+
+// ══════ PANEL TABS ══════
+function switchTab(el, id){
+  el.closest('.panel-tabs').querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  
+  const sections = el.closest('.how-panel').querySelectorAll('.panel-section');
+  sections.forEach(s => {
+    s.style.opacity = 0;
+    setTimeout(() => {
+      s.classList.remove('active');
+      if (s.id === id) {
+        s.classList.add('active');
+        s.style.opacity = 1;
+      }
+    }, 200);
+  });
+}
+
+// ══════ SKILLS ══════
+const skills = [];
+function addSkill(){
+  const inp = document.getElementById('skill-inp');
+  const v = inp.value.trim();
+  if(!v || skills.includes(v)) { inp.value=''; return; }
+  skills.push(v);
+  inp.value = '';
+  renderSkills();
+  syncPreview();
+  updateScore();
+}
+function removeSkill(s){
+  const i = skills.indexOf(s);
+  if(i > -1) skills.splice(i,1);
+  renderSkills();
+  syncPreview();
+  updateScore();
+}
+function renderSkills(){
+  document.getElementById('skills-box').innerHTML =
+    skills.map(s => `<span class="skill-chip">${s}<button onclick="removeSkill('${s}')">×</button></span>`).join('');
+}
+
+// ══════ LIVE PREVIEW SYNC ══════
+function g(id){ const e=document.getElementById(id); return e?e.value.trim():''; }
+function set(id, val){ const e=document.getElementById(id); if(e) e.textContent=val||''; }
+function syncPreview(){
+  set('p-name', g('b-name') || 'Your Name');
+  set('p-title', g('b-title') || 'Professional Title');
+  set('p-email', g('b-email') || 'your@email.com');
+  set('p-phone', g('b-phone') || '+91 XXXXXXXXXX');
+  set('p-city', g('b-city') || 'Your City');
+  set('p-summary', g('b-summary') || 'A motivated professional with a passion for technology and problem-solving...');
+  const deg = g('b-degree'), uni = g('b-uni');
+  set('p-degree', [deg,uni].filter(Boolean).join(' — ') || 'Degree in Field — University Name');
+  const yr = g('b-year'), cgpa = g('b-cgpa');
+  set('p-year', [yr, cgpa ? 'CGPA: '+cgpa : ''].filter(Boolean).join(' | ') || 'Graduation Year');
+  set('p-exp-role', g('b-exp-role') || 'Job Title at Company');
+  set('p-exp-dur', g('b-exp-dur') || 'Duration');
+  set('p-exp-desc', g('b-exp-desc') || 'Key responsibilities and achievements will appear here...');
+  const sk = document.getElementById('p-skills');
+  if(sk) sk.innerHTML = skills.length ? skills.map(s=>`<span class="rd-skill">${s}</span>`).join('') : '<span class="rd-skill">Your skills appear here</span>';
+  const lnk = g('b-link');
+  const lnkSec = document.getElementById('link-sec');
+  if(lnkSec){ lnkSec.style.display = lnk ? 'block' : 'none'; set('p-link', lnk); }
+  updateScore();
+}
+
+// ══════ SCORE ══════
+function updateScore(){
+  const fields = ['b-name','b-title','b-email','b-phone','b-city','b-summary','b-degree','b-uni','b-year','b-exp-role'];
+  let filled = fields.filter(f => g(f).length > 2).length;
+  if(skills.length > 0) filled++;
+  const pct = Math.min(Math.round((filled / (fields.length+1)) * 100), 100);
+  const score = Math.max(1, Math.round(pct/10));
+  document.getElementById('score-fill').style.width = pct + '%';
+  document.getElementById('score-val').textContent = score + '/10';
+}
+
+// ══════ TEMPLATE ══════
+function setTemplate(el, name){
+  document.querySelectorAll('.tmpl-opt').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  showToast('✨ Template "'+name+'" selected!');
+}
+
+// ══════ GENERATE ══════
+function handleGenerate(){
+  if(!g('b-name')){ showToast('⚠️ Please enter your name first.'); return; }
+  showToast('✦ Résumé generated! Click Preview or Download.');
+  setTimeout(() => openModal(), 600);
+}
+
+// ══════ MODAL ══════
+function openModal(){
+  const mc = document.getElementById('modal-content');
+  const lr = document.getElementById('live-resume');
+  mc.innerHTML = '';
+  if(lr){ mc.appendChild(lr.cloneNode(true)); }
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const nm = document.querySelector('.modal-title');
+  const name = g('b-name');
+  if(nm && name) nm.textContent = '📄 Résumé Preview — ' + name;
+}
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleModalClick(e){
+  if(e.target === document.getElementById('modal')) closeModal();
+}
+
+// ══════ DOWNLOAD (UPDATED FOR PDF) ══════
+function downloadResume(){
+  if (typeof html2pdf === 'undefined') {
+    showToast('⚠️ PDF library is loading, please try again in a moment.');
+    return;
+  }
+
+  showToast('📥 Preparing your PDF... Download will start shortly.');
+  const name = g('b-name') || 'Resume';
+  const element = document.getElementById('live-resume');
+
+  const opt = {
+    margin:       0.3,
+    filename:     (name.replace(/\s+/g,'_') || 'Resume') + '_Haas.pdf',
+    image:        { type: 'jpeg', quality: 1 },
+    html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+  };
+
+  const originalBorderRadius = element.style.borderRadius;
+  const originalBoxShadow = element.style.boxShadow;
+  const originalMaxWidth = element.style.maxWidth;
+
+  element.style.borderRadius = '0';
+  element.style.boxShadow = 'none';
+  element.style.maxWidth = '100%'; 
+
+  html2pdf().set(opt).from(element).save().then(() => {
+    element.style.borderRadius = originalBorderRadius;
+    element.style.boxShadow = originalBoxShadow;
+    element.style.maxWidth = originalMaxWidth;
+    showToast('✅ Resume downloaded successfully!');
+  }).catch(err => {
+    console.error('PDF Generation Error:', err);
+    showToast('❌ Failed to generate PDF.');
+    element.style.borderRadius = originalBorderRadius;
+    element.style.boxShadow = originalBoxShadow;
+    element.style.maxWidth = originalMaxWidth;
+  });
+}
+
+// ══════ TOAST ══════
+let toastT;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function toggleFaq(el){ el.classList.toggle('open'); }
+
+function joinWaitlist(id){
+  const inp = document.getElementById(id);
+  if(!inp || !inp.value.includes('@')){ showToast('⚠️ Please enter a valid email address.'); return; }
+  showToast('🎉 You\'re on the list! Check your inbox soon.');
+  inp.value = '';
+}
+
+// ══════ REVEAL ANIMATIONS ══════
+function initReveal(){
+  const els = document.querySelectorAll('.page.active .reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+  }, {threshold:0.08});
+  els.forEach(el => io.observe(el));
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  handleOAuthCallback();
+  updateNavbarUI();
+  initReveal();
+});
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+</script>
+<!-- Chat widget: bottom-right AI assistant -->
+<div id="chat-widget">
+  <button id="chat-fab" onclick="toggleChat()">💬</button>
+  <div id="chat-box" class="chat-hidden" aria-hidden="true">
+    <div class="chat-header">Haas AI Assistant <span onclick="toggleChat()" style="cursor:pointer">×</span></div>
+    <div id="chat-messages" role="log" aria-live="polite"></div>
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="How can I improve my resume?">
+      <button id="chat-send" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  #chat-widget{position:fixed;right:0;bottom:0;z-index:1200;font-family:inherit}
+  #chat-fab{position:relative;right:1rem;bottom:1rem;width:56px;height:56px;border-radius:50%;background:var(--green);border:none;cursor:pointer;font-size:1.4rem;box-shadow:var(--shadow3);color:#fff;margin:1rem}
+  #chat-box{width:320px;height:420px;background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow3);display:flex;flex-direction:column;overflow:hidden;transition:transform .28s ease,opacity .2s ease;position:fixed;right:1.75rem;bottom:1.75rem}
+  .chat-hidden{transform:translateY(8px) scale(.98);opacity:0;pointer-events:none}
+  /* Expanded full-height right panel */
+  #chat-box.chat-open{position:fixed;right:0;top:0;bottom:0;height:100vh;width:360px;border-radius:0;transform:none;opacity:1;pointer-events:auto}
+  .chat-header{background:var(--green);color:#fff;padding:0.75rem 1rem;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+  #chat-messages{flex:1;padding:0.75rem;overflow:auto;font-size:0.9rem;background:linear-gradient(180deg,#fff,#f8faf8)}
+  .chat-input-area{display:flex;gap:0.5rem;padding:0.6rem;border-top:1px solid var(--border)}
+  #chat-input{flex:1;padding:0.5rem;border:1px solid var(--border);border-radius:6px}
+  #chat-send{padding:0.45rem 0.8rem;border-radius:6px;border:none;background:var(--green);color:#fff;cursor:pointer}
+  .cw-msg{margin-bottom:0.6rem;display:block}
+  .cw-user{background:#EEF2FF;padding:0.5rem;border-radius:8px;align-self:flex-end}
+  .cw-bot{background:#F1FDF7;padding:0.5rem;border-radius:8px}
+</style>
+
+<script>
+  function toggleChat() {
+    document.getElementById('chat-box').classList.toggle('chat-hidden');
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const messages = document.getElementById('chat-messages');
+    const userText = input.value;
+    if (!userText) return;
+
+    // 1. Display User Message
+    messages.innerHTML += `<div class="cw-msg cw-user"><b>You:</b> ${userText}</div>`;
+    messages.scrollTop = messages.scrollHeight;
+    
+    // 2. Extract Data from Resume Builder
+    const resumeData = {
+      name: typeof g === 'function' ? g('b-name') : '',
+      role: typeof g === 'function' ? g('b-title') : '',
+      skills: (typeof skills !== 'undefined' && Array.isArray(skills)) ? skills : [],
+      experience: typeof g === 'function' ? g('b-exp-desc') : ''
+    };
+
+    // 3. Mock AI Response (Replace this with your API call to OpenAI/Gemini/Claude)
+    messages.innerHTML += `<div class="cw-msg cw-bot" style="margin-top:0.5rem;"><b>Haas AI:</b> Thinking...</div>`;
+    messages.scrollTop = messages.scrollHeight;
+    const aiResponse = await mockAiAnalysis(userText, resumeData);
+    // replace last bot message
+    const bots = messages.querySelectorAll('.cw-bot');
+    if (bots.length) bots[bots.length - 1].textContent = `Haas AI: ${aiResponse}`;
+    input.value = '';
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  async function mockAiAnalysis(query, data) {
+    // Logic to suggest updates
+    if (!data.skills || data.skills.length < 5) {
+      return "I noticed your skills list is short. Adding specific tools like 'REST APIs' or 'Docker' could boost your match score!";
+    }
+    return "Your profile looks solid! Have you considered quantifying your 'Key Achievements' with numbers? (e.g., 'Improved load time by 40%')";
+  }
+</script>
+<script>
+function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
+['dragleave', 'drop'].forEach(evt => document.getElementById('drop-zone').addEventListener(evt, (e) => e.currentTarget.classList.remove('dragover')));
+
+function handleDrop(e) {
+  e.preventDefault();
+  const files = e.dataTransfer.files;
+  processResume(files[0]);
+}
+
+function handleFileSelect(e) {
+  processResume(e.target.files[0]);
+}
+
+async function processResume(file) {
+  if (!file) return;
+
+  // Basic client-side validation (server must re-validate)
+  const allowed = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  ];
+  if (!allowed.includes(file.type)) {
+    showToast('❌ Unsupported file type. Use PDF or DOCX.');
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('❌ File too large (max 5MB).');
+    return;
+  }
+
+  showToast('📄 Uploading & analyzing ' + file.name + '...');
+
+  try {
+    const form = new FormData();
+    form.append('file', file);
+
+    const resp = await fetch('/api/analyze-resume', { method: 'POST', body: form });
+    if (!resp.ok) throw new Error('Server returned ' + resp.status);
+    const data = await resp.json();
+
+    // Expecting { score: number (0-10), feedback: [{title, detail}] }
+    const score = (typeof data.score === 'number') ? data.score : 0;
+    const pct = Math.min(100, Math.max(0, Math.round((score / 10) * 100)));
+
+    document.getElementById('score-results').style.display = 'block';
+    document.getElementById('upload-score-fill').style.width = pct + '%';
+    document.getElementById('upload-score-val').textContent = (score % 1 === 0) ? `${score}/10` : `${score.toFixed(1)}/10`;
+
+    const feedback = document.getElementById('feedback-list');
+    if (Array.isArray(data.feedback) && data.feedback.length) {
+      feedback.innerHTML = data.feedback.map(f => `\n        <div class="mr-card"><div class="mr-t">${escapeHtml(f.title)}</div><div class="mr-s">${escapeHtml(f.detail)}</div></div>`).join('');
+    } else {
+      feedback.innerHTML = `<div class="mr-card"><div class="mr-t">No feedback</div><div class="mr-s">The analyzer returned no feedback.</div></div>`;
+    }
+
+    showToast('✨ Analysis complete!');
+  } catch (err) {
+    console.error(err);
+    showToast('⚠️ Analysis failed — try again later.');
+
+    // Fallback: show a mock result so the UI still demonstrates behavior
+    document.getElementById('score-results').style.display = 'block';
+    document.getElementById('upload-score-fill').style.width = '85%';
+    document.getElementById('upload-score-val').textContent = '8.5/10';
+    const feedback = document.getElementById('feedback-list');
+    feedback.innerHTML = `\n      <div class="mr-card"><div class="mr-t">✅ Strengths</div><div class="mr-s">Strong project experience in React and Node.js.</div></div>\n      <div class="mr-card"><div class="mr-t">⚠️ Needs Improvement</div><div class="mr-s">Consider adding metrics to your "Achievements" section.</div></div>`;
+  }
+}
+
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[s]);
+}
+</script>
+</body>
+</html>
